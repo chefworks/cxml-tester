@@ -1,0 +1,10 @@
+.git
+doc
+.idea
+*~
+__pycache__
+venv
+.gitignore
+.dockerignore
+tests/*.sqlite
+.pytest_cache

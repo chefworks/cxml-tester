@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Submit cXML Request data{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="endpoint">End point URL</label>
+    <input name="endpoint" id="endpoint" value="{{ endpoint }}" required>
+    <label for="cxml">cXML</label>
+    <textarea name="cxml" id="cxml">{{ request.form['cxml'] }}</textarea>
+    <input type="submit" value="Send">
+  </form>
+<pre>
+  {{ result }}
+</pre>
+{% endblock %}

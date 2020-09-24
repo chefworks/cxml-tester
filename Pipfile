@@ -1,0 +1,23 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pylint = "*"
+flake8 = "*"
+isort = "*"
+coverage = "*"
+pytest = "*"
+more-itertools = "*"
+
+[packages]
+PyYAML = "*"
+lxml = "*"
+Flask = "*"
+python-dotenv = "*"
+watchdog = "*"
+Flask-RESTful = "*"
+
+[requires]
+python_version = "3.8.2"

@@ -1,0 +1,9 @@
+
+# Ignore dynaconf secret files
+*.log
+*~
+.secrets.*
+/.coverage
+/.env.local
+/builds
+__pycache__
