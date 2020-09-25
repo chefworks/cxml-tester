@@ -26,7 +26,7 @@ RUN pipenv sync
 
 COPY . /app
 
-EXPOSE 80
+EXPOSE 8080
 
-ENTRYPOINT pipenv run flask run --host=0.0.0.0 --port=80
+ENTRYPOINT pipenv run flask run --host=0.0.0.0 --port=8080
 
