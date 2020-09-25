@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE cXML SYSTEM "http://xml.cxml.org/schemas/cXML/1.2.032/cXML.dtd">
+<cXML payloadID="201604200434.1461195072369.2995483304117488636@birchstreet.com" xml:lang="en-US" timestamp="2016-04-20T04:34:19">
+    <Header>
+        <From>
+            <Credential domain="NetworkID">
+                <Identity>hilton1</Identity>
+            </Credential>
+        </From>
+        <To>
+            <Credential domain="birchstreet.com">
+                <Identity>765001</Identity>
+            </Credential>
+        </To>
+        <Sender>
+            <Credential domain="birchstreet.com">
+                <Identity>pillar2178</Identity>
+                <SharedSecret>21848</SharedSecret>
+            </Credential>
+            <UserAgent>V7</UserAgent>
+        </Sender>
+    </Header>
+    <Request deploymentMode="production">
+        <PunchOutSetupRequest operation="create">
+            <BuyerCookie>4-20-2016-16-34-19-286-CYCHICOGM</BuyerCookie>
+            <BrowserFormPost>
+                <URL>https://www14.birchstreetsystems.com:443/j4/ReceiveItemsPunchout.jsp</URL>
+            </BrowserFormPost>
+        </PunchOutSetupRequest>
+    </Request>
+</cXML>

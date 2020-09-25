@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Cart OrderMessageOut{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<form method="post" action="order">
+  <label for="cart_cxml">Cart</label>
+  <textarea name="cart_cxml" id="cart_cxml" readonly>{{ cxml }}</textarea>
+  <input type="hidden" name="new_cart" value="1">
+  <input type="submit" value="Convert to order">
+</form>
+{% endblock %}

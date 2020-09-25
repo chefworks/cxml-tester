@@ -9,9 +9,9 @@
     <label for="endpoint">End point URL</label>
     <input name="endpoint" id="endpoint" value="{{ endpoint }}" required>
     <label for="identity">From identity</label>
-    <input name="identity" id="identity" value="{{ request.form['identity'] }}">
+    <input name="identity" id="identity" value="{{ identity }}">
     <label for="secret">Sender shared secrete</label>
-    <input name="secret" id="secret" value="{{ request.form['secret'] }}">
+    <input name="secret" id="secret" value="{{ secret }}">
     <label for="form_post">Form Post</label>
     <input name="form_post" id="form_post" value="{{ form_post }}">
     <label for="auxiliary_id">Auxiliary ID</label>
@@ -19,7 +19,7 @@
     <label for="xdebug">XDEBUG</label>
     <input name="xdebug" id="xdebug" type="checkbox">
     <label for="cxml">cXML</label>
-    <textarea name="cxml" id="cxml">{{ request.form['cxml'] }}</textarea>
+    <textarea name="cxml" id="cxml">{{ cxml }}</textarea>
     <input type="submit" value="Send">
     <hr/>
     <label for="result">Result</label>
