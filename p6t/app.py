@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-import os
-
 from flask import Flask
-
+from p6t.settings import settings
 app = Flask(__name__, instance_relative_config=True)
+
 
 @app.route("/hello")
 def hello():
@@ -13,6 +12,7 @@ def hello():
 from p6t import cxml
 
 app.register_blueprint(cxml.bp)
+app.secret_key = settings.SESSION_SECRET_KEY
 
 # make url_for('index') == url_for('blog.index')
 # in another app, you might define a separate main index here with

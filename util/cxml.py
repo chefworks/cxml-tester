@@ -5,6 +5,11 @@ import os
 import requests
 import base64
 
+XPATH_PUNCHOUT_IDENTITY = '//Header/From/Credential/Identity'
+XPATH_POST_URL = '/cXML/Request/PunchOutSetupRequest/BrowserFormPost'
+XPATH_SHARED_SECRET = '//Header/Sender/Credential/SharedSecret'
+XPATH_START_URL = '//Response/PunchOutSetupResponse/StartPage/URL'
+XPATH_AUXILIARY_ID = '//SupplierPartAuxiliaryID'
 
 def get_proxy():
     socks =  os.environ.get('SOCKS', None)
@@ -17,8 +22,8 @@ def get_proxy():
     return None
 
 
-def post(url, data):
-    return requests.post(url, data=data, proxies=get_proxy(), verify=False)
+def post(url, data, verify=False, headers={}):
+    return requests.post(url, data=data, proxies=get_proxy(), verify=verify, headers=headers)
 
 
 def post_pr(xml: etree.ElementBase, url) -> (str, etree.ElementBase):
@@ -73,18 +78,12 @@ def decode_cxml(cxml_base64: str) -> etree.ElementBase:
     return etree.fromstring(cxml, parser)
 
 
-def load_cxml(cxml_file: str, **subst_vars: dict) -> etree.ElementBase:
+def load_cxml(cxml: bytes or str, subst_vars: dict = {}) -> etree.ElementBase:
     parser = etree.XMLParser()
-    xml: etree.ElementBase = etree.parse(cxml_file, parser)
+    xml: etree.ElementBase = etree.fromstring(cxml, parser) if type(cxml) == bytes else etree.parse(cxml, parser)
 
-    subst_xpaths = dict(
-        punchout_identity='//Header/From/Credential/Identity',
-        post_url='/cXML/Request/PunchOutSetupRequest/BrowserFormPost'
-    )
-
-    for key in subst_vars:
-        xpath = subst_xpaths[key]
-        subst_value = subst_vars[key]
+    for xpath in subst_vars:
+        subst_value = subst_vars[xpath]
 
         if subst_value is not None:
             for u in xml.xpath(xpath):
@@ -94,3 +93,9 @@ def load_cxml(cxml_file: str, **subst_vars: dict) -> etree.ElementBase:
         pass
 
     return xml
+
+
+def cxml_extract(cxml: str or etree.ElementBase, xpath: str) -> str:
+    xml = load_cxml(cxml.encode()) if type(cxml) == str else cxml
+    arr = xml.xpath(xpath)
+    return arr[0].text if len(arr) else ''

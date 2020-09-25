@@ -132,3 +132,8 @@ input[type=submit] {
   align-self: start;
   min-width: 10em;
 }
+
+.provider-site {
+  width: 100%;
+  min-height: 40em;
+}
