@@ -12,13 +12,13 @@ pytest = "*"
 more-itertools = "*"
 
 [packages]
-PyYAML = "*"
 lxml = "*"
-Flask = "*"
 python-dotenv = "*"
 watchdog = "*"
 Flask-RESTful = "*"
 requests = "*"
+pyyaml = "*"
+flask = "*"
 
 [requires]
 python_version = "3.6"
