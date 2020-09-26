@@ -132,9 +132,9 @@ def post_cxml(url, data, xdebug=False):
 @bp.route("/", methods=["GET", "POST"])
 def cxml_request():
     """Submit cXML to endpoint URL."""
-    endpoint = session.get('endpoint', '')
-    secret = session.get('secret', '')
-    identity = session.get('identity', '')
+    secret = session.get('secret', settings.SECRET)
+    endpoint = session.get('endpoint', settings.ENDPOINT)
+    identity = session.get('identity', settings.IDENTITY)
     content = ''
     start_url = ''
     form_post = request.url + 'cart'
