@@ -1,11 +1,14 @@
 # cxml-tester
+[![Build Status](https://img.shields.io/github/workflow/status/chefworks/cxml-tester/ci-tests)](https://github.com/chefworks/cxml-tester)
 
 cxml-tester's purpose is to test Punchout Providers implementations.
 
 How it works: cxml-tester provides a web UI for posting cXML data to end-points.
 While the same - and more - can be acheived with `curl`, cxml-tester has a nicer UI.
 
-see [cXML Reference Guide](http://xml.cxml.org/current/cXMLReferenceGuide.pdf) for more details.
+see [cXML Reference Guide](http://xml.cxml.org/current/cXMLReferenceGuide.pdf) for general
+infromation about the cXML protocol and syntax
+
 
 ## Running locally
 ### Requirements
