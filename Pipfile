@@ -10,6 +10,7 @@ isort = "*"
 coverage = "*"
 pytest = "*"
 more-itertools = "*"
+importlib-metadata = "*"
 
 [packages]
 lxml = "*"
