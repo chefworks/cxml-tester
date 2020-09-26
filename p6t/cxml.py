@@ -10,7 +10,13 @@ bp = Blueprint("cxml", __name__)
 ENDPOINT = 'https://www.chefworks.com/m2po/cxml'
 
 
-def preprocess_cxml(xml: str, identity=None, secret=None, form_post=None, auxiliary_id=None):
+def preprocess_cxml(
+        xml: str,
+        identity=None,
+        secret=None,
+        form_post=None,
+        auxiliary_id=None
+):
     try:
         xml_el = cxml.load_cxml(
             xml.encode(),
@@ -23,7 +29,7 @@ def preprocess_cxml(xml: str, identity=None, secret=None, form_post=None, auxili
         )
         return etree.tostring(xml_el, pretty_print=True)
 
-    except Exception as e:
+    except Exception:
         return xml
     pass
 
@@ -34,9 +40,15 @@ def cxml_cart():
     xml = cxml.decode_cxml(cxml_base64)
     cxml_decoded = etree.tostring(xml, pretty_print=True)
 
+    if type(cxml_decoded) == bytes:
+        cxml_text = cxml_decoded.decode()
+    else:
+        cxml_text = cxml_decoded
+        pass
+
     return render_template(
         'cxml/cart.html',
-        cxml=(cxml_decoded.decode() if type(cxml_decoded) == bytes else cxml_decoded)
+        cxml=cxml_text
     )
 
 
@@ -100,13 +112,13 @@ def post_cxml(url, data, xdebug=False):
     result = cxml.post(url, data, headers=headers)
     xml = None
     content = ''
-    
+
     if result.ok:
-        
+
         content = result.text
         try:
             xml = cxml.load_cxml(content.encode())
-        except Exception as e:
+        except Exception:
             flash('corrupt response cXML')
         pass
     else:
@@ -142,7 +154,11 @@ def cxml_request():
         session['identity'] = identity
         session['cxml_data'] = cxml_data
     else:
-        cxml_path = os.path.join(os.path.dirname(__file__), 'cxml', 'create.xml')
+        cxml_path = os.path.join(
+            os.path.dirname(__file__),
+            'cxml',
+            'create.xml'
+        )
         cxml_data = session.get('cxml_data', '') or open(cxml_path).read()
         pass
 

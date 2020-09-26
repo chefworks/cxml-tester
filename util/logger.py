@@ -1,6 +1,7 @@
 import logging
 import logging.config
 from os import path
+
 import yaml
 
 with open('%s/../logging.yaml' % path.dirname(__file__)) as f:

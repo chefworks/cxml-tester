@@ -1,9 +1,10 @@
-from lxml import etree
 import argparse
-from urllib.parse import urlparse
-import os
-import requests
 import base64
+import os
+from urllib.parse import urlparse
+
+import requests
+from lxml import etree
 
 XPATH_PUNCHOUT_IDENTITY = '//Header/From/Credential/Identity'
 XPATH_POST_URL = '/cXML/Request/PunchOutSetupRequest/BrowserFormPost/URL'

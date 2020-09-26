@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 from flask import Flask
+
+from p6t import cxml
 from p6t.settings import settings
+
 app = Flask(__name__, instance_relative_config=True)
 
 
@@ -8,8 +11,8 @@ app = Flask(__name__, instance_relative_config=True)
 def hello():
     return "Hello, World!"
 
+
 # apply the blueprints to the app
-from p6t import cxml
 
 app.register_blueprint(cxml.bp)
 app.secret_key = settings.SESSION_SECRET_KEY
