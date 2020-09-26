@@ -11,7 +11,7 @@ test: static
 initenv:
 	pip3 install --upgrade pip
 	pip install pipenv
-	pipenv sync
+	pipenv sync --dev
 
 static: imports flake8 pylint
 

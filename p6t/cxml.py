@@ -2,8 +2,10 @@ import os
 
 from flask import Blueprint, flash, render_template, request, session
 from lxml import etree
-from .settings import settings
+
 from util import cxml, xslt
+
+from .settings import settings
 
 bp = Blueprint("cxml", __name__)
 
