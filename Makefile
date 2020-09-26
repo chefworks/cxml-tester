@@ -31,7 +31,7 @@ test-clean:
 export RUN_MODE = development
 
 run-flask:
-	pipenv run python -m flask run --host=0.0.0.0 --port=$(PORT)
+	pipenv run python flask run --host=0.0.0.0 --port=$(PORT)
 
 run-flask-prod:
 	$(MAKE) run-flask RUN_MODE=production
