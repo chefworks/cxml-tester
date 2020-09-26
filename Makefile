@@ -8,14 +8,19 @@ endif
 
 test: static
 
+initenv:
+	pip3 install --upgrade pip
+	pip install pipenv
+	pipenv sync
+
 static: imports flake8 pylint
 
 
 flake8:
-	pipenv run flake8 p6t
+	pipenv run flake8 p6t util
 
 pylint:
-	pipenv run pylint p6t -E
+	pipenv run pylint p6t util -E
 
 imports:
 	pipenv run isort -rc $(autofix) p6t util
