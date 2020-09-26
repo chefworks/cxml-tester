@@ -21,7 +21,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pipenv
-        pipenv sync
+        pipenv sync --dev
     - name: make static tests
       run: make static
 
