@@ -1,6 +1,6 @@
 import os
 
-from flask import Blueprint, flash, render_template, request, session
+from flask import Blueprint, flash, render_template, request, session, url_for, redirect
 from lxml import etree
 
 from util import cxml, xslt
@@ -127,6 +127,17 @@ def post_cxml(url, data, xdebug=False):
         pass
 
     return xml, content
+
+
+@bp.route("/reset")
+def cxml_reset():
+    for i in ['endpoint', 'secret', 'identity', 'cxml_data']:
+        if i in session:
+            del session[i]
+            pass
+        pass
+
+    return redirect(url_for('cxml.cxml_request'))
 
 
 @bp.route("/", methods=["GET", "POST"])
