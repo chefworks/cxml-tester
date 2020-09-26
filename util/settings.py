@@ -1,6 +1,6 @@
 from os import environ
 
-from dotenv import load_dotenv
+from dotenv import find_dotenv, load_dotenv
 
 
 class Settings:
@@ -12,6 +12,8 @@ class Settings:
             list_vars: [str] = None
     ):
         load_dotenv()
+        load_dotenv(find_dotenv('.env.local'))
+
         self.search_prefixes = self.resolve_search_prefixes()
 
         self.bool_vars = bool_vars or []

@@ -1,6 +1,7 @@
 import os
 
-from flask import Blueprint, flash, render_template, request, session, url_for, redirect
+from flask import (Blueprint, flash, redirect, render_template, request,
+                   session, url_for)
 from lxml import etree
 
 from util import cxml, xslt
