@@ -1,8 +1,13 @@
 # cxml-tester
 
-With cxml-tester, you can posts cXML request data to test a Punch Out capable endpoint.
+cxml-tester's purpose is to test Punchout Providers implementations.
 
-## Running locall
+How it works: cxml-tester provides a web UI for posting cXML data to end-points.
+While the same - and more - can be acheived with `curl`, cxml-tester has a nicer UI.
+
+see [cXML Reference Guide](http://xml.cxml.org/current/cXMLReferenceGuide.pdf) for more details.
+
+## Running locally
 ### Requirements
 - make
 - python3
@@ -12,7 +17,7 @@ With cxml-tester, you can posts cXML request data to test a Punch Out capable en
 
 ```
 make init
-make run-flask
+make run
 ```
 
 Then go to http://localhost:8080
