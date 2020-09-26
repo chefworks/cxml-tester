@@ -156,6 +156,7 @@ def cxml_request():
     else:
         cxml_path = os.path.join(
             os.path.dirname(__file__),
+            'static',
             'cxml',
             'create.xml'
         )
