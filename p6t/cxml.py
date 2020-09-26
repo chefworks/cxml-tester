@@ -2,12 +2,10 @@ import os
 
 from flask import Blueprint, flash, render_template, request, session
 from lxml import etree
-
+from .settings import settings
 from util import cxml, xslt
 
 bp = Blueprint("cxml", __name__)
-
-ENDPOINT = 'https://www.chefworks.com/m2po/cxml'
 
 
 def preprocess_cxml(
@@ -67,9 +65,9 @@ def cxml_order():
     # init secret, endpoint, identity from session if new cart
     var_src = session if new_cart else request.form
 
-    secret = var_src.get('secret', '')
-    endpoint = var_src.get('endpoint', '')
-    identity = var_src.get('identity', '')
+    secret = var_src.get('secret', settings.SECRET)
+    endpoint = var_src.get('endpoint', settings.ENDPOINT)
+    identity = var_src.get('identity', settings.IDENTITY)
     cxml_response = ''
     cart_cxml = request.form['cart_cxml']
 
@@ -106,7 +104,7 @@ def cxml_order():
 def post_cxml(url, data, xdebug=False):
     headers = {}
     if xdebug:
-        headers['Cookie'] = 'XDEBUG_SESSION=PHPSTORM'
+        headers['Cookie'] = 'XDEBUG_SESSION=%s' % settings.XDEBUG_SESSION_NAME
         pass
 
     result = cxml.post(url, data, headers=headers)
@@ -185,7 +183,7 @@ def cxml_request():
     return render_template(
         'cxml/request.html',
         content=content,
-        endpoint=(endpoint or ENDPOINT),
+        endpoint=endpoint,
         secret=secret,
         identity=identity,
         start_url=start_url,
