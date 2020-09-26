@@ -31,7 +31,7 @@ test-clean:
 export RUN_MODE = development
 
 run-flask:
-	pipenv run python flask run --host=0.0.0.0 --port=$(PORT)
+	pipenv run python -m flask run --host=0.0.0.0 --port=$(PORT)
 
 run-flask-prod:
 	$(MAKE) run-flask RUN_MODE=production
@@ -39,7 +39,7 @@ run-flask-prod:
 DOCKER_PUSH = 0
 #DOCKER_IMG_TAG = docker-hub.chefworks.com/erp-webapi
 DOCKER_IMG_TAG = docker.chefworks.cloud/cxml-tester
-DOCKER_IMG_VERSION = v1.0
+DOCKER_IMG_VERSION = v1.0.1
 
 docker:
 	docker build -t $(DOCKER_IMG_TAG):$(DOCKER_IMG_VERSION) .
