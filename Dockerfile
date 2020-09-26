@@ -17,6 +17,7 @@ COPY . ./
 # For environments with multiple CPU cores, increase the number of workers
 # to be equal to the cores available.
 ENV PORT 8080
+ENV PIPENV_VENV_IN_PROJECT 1
 CMD exec pipenv run gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 p6t:app
 
 
