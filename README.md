@@ -1,13 +1,18 @@
-# cxml-tester
+# cXML Tester
 [![Build Status](https://img.shields.io/github/workflow/status/chefworks/cxml-tester/ci-tests)](https://github.com/chefworks/cxml-tester)
 
-cxml-tester's purpose is to test Punchout Providers implementations.
+cXML Tester is a [cXML]((http://xml.cxml.org/current/cXMLReferenceGuide.pdf)) data posting tool for 
+testing [Procurement PunchOut](https://en.wikipedia.org/wiki/CXML) vendor implementations.
 
-How it works: cxml-tester provides a web UI for posting cXML data to end-points.
-While the same - and more - can be acheived with `curl`, cxml-tester has a nicer UI.
+## Features
+- Compared to using plain `curl`, the cXML Tester web UI makes it somewhat easier to edit the cXML data before posting
+and inspect results.
+- XDEBUG session initiation (usefule for debugging local end-points written in PHP)
+
 ----
 ![Screenshot](p6t/static/img/screenshot-1.png)
 ----
+
 see [cXML Reference Guide](http://xml.cxml.org/current/cXMLReferenceGuide.pdf) for general
 infromation about the cXML protocol and syntax
 
