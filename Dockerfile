@@ -1,35 +1,22 @@
-FROM ubuntu:18.04
+# Use the official lightweight Python image.
+# https://hub.docker.com/_/python
+FROM python:3.8-slim
 
-ENV DEBIAN_FRONTEND=noninteractive
+# Allow statements and log messages to immediately appear in the Knative logs
+ENV PYTHONUNBUFFERED True
 
-RUN apt-get update && apt-get -y upgrade
-
-RUN ln -sf bash /bin/sh
-
-RUN apt-get update && apt-get -y install apt-utils apt-transport-https ca-certificates curl software-properties-common locales curl wget git debianutils netcat-openbsd iputils-ping tzdata htop bsd-mailx
-
-RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
-RUN update-locale LANG="en_US.UTF-8" LANGUAGE="en_US"
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-ENV ACCEPT_EULA=Y
-
-RUN apt-get update && apt-get install -y python3-pip zlib1g-dev libzip-dev libssl-dev libreadline-dev libsqlite3-dev libbz2-dev python3-minimal
-
-RUN pip3 install --upgrade pip
+# Copy local code to the container image.
+ENV APP_HOME /app
+WORKDIR $APP_HOME
 RUN pip install pipenv
-
-COPY Pipfile.lock Pipfile /app/
-WORKDIR /app
+COPY Pipfile.lock Pipfile ./
 RUN pipenv sync
-
-COPY . /app
-
-EXPOSE 8080
-
-ENV PORT=8080
-
-ENTRYPOINT make run-flask-prod
+COPY . ./
+# Run the web service on container startup. Here we use the gunicorn
+# webserver, with one worker process and 8 threads.
+# For environments with multiple CPU cores, increase the number of workers
+# to be equal to the cores available.
+ENV PORT 8080
+CMD exec pipenv run gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 p6t:app
 
 
