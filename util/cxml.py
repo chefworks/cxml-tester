@@ -12,8 +12,9 @@ XPATH_SHARED_SECRET = '//Header/Sender/Credential/SharedSecret'
 XPATH_START_URL = '//Response/PunchOutSetupResponse/StartPage/URL'
 XPATH_AUXILIARY_ID = '//SupplierPartAuxiliaryID'
 
+
 def get_proxy():
-    socks =  os.environ.get('SOCKS', None)
+    socks = os.environ.get('SOCKS', None)
 
     if socks:
         prox = 'socks5://%s' % socks
@@ -24,7 +25,13 @@ def get_proxy():
 
 
 def post(url, data, verify=False, headers={}):
-    return requests.post(url, data=data, proxies=get_proxy(), verify=verify, headers=headers)
+    return requests.post(
+        url,
+        data=data,
+        proxies=get_proxy(),
+        verify=verify,
+        headers=headers
+    )
 
 
 def post_pr(xml: etree.ElementBase, url) -> (str, etree.ElementBase):
@@ -51,12 +58,31 @@ def post_pr(xml: etree.ElementBase, url) -> (str, etree.ElementBase):
 
 
 def parseargs():
-    argparser = argparse.ArgumentParser(description='Post CXML Punchout request')
+    argparser = argparse.ArgumentParser(
+        description='Post CXML Punchout request'
+    )
 
-    argparser.add_argument('url', type=str, help='post CXML to this url - e.g. https://dev.chefworks.com/adacopr.php')
-    argparser.add_argument('cxml', type=argparse.FileType('r'), help='Input CXML file')
+    sample_host = 'https://dev.chefworks.com/adacopr.php'
+    argparser.add_argument(
+        'url',
+        type=str,
+        help=f'post CXML to this url - e.g. {sample_host}'
+    )
 
-    argparser.add_argument('--validate', dest='validate', action='store_const', const=True, default=False, help='perform DTD validation on input CXML (default: False)')
+    argparser.add_argument(
+        'cxml',
+        type=argparse.FileType('r'),
+        help='Input CXML file'
+    )
+
+    argparser.add_argument(
+        '--validate',
+        dest='validate',
+        action='store_const',
+        const=True,
+        default=False,
+        help='perform DTD validation on input CXML (default: False)'
+    )
 
     args = argparser.parse_args()
 
@@ -81,7 +107,12 @@ def decode_cxml(cxml_base64: str) -> etree.ElementBase:
 
 def load_cxml(cxml: bytes or str, subst_vars: dict = {}) -> etree.ElementBase:
     parser = etree.XMLParser()
-    xml: etree.ElementBase = etree.fromstring(cxml, parser) if type(cxml) == bytes else etree.parse(cxml, parser)
+    xml: etree.ElementBase = None
+    if type(cxml) == bytes:
+        xml = etree.fromstring(cxml, parser)
+    else:
+        xml = etree.parse(cxml, parser)
+        pass
 
     for xpath in subst_vars:
         subst_value = subst_vars[xpath]

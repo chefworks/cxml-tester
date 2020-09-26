@@ -5,7 +5,12 @@ from dotenv import load_dotenv
 
 class Settings:
 
-    def __init__(self, bool_vars: [str] = None, int_vars: [str] = None, list_vars: [str] = None):
+    def __init__(
+            self,
+            bool_vars: [str] = None,
+            int_vars: [str] = None,
+            list_vars: [str] = None
+    ):
         load_dotenv()
         self.search_prefixes = self.resolve_search_prefixes()
 
@@ -87,4 +92,3 @@ class Settings:
         return val.format_map(self)
 
     pass
-
