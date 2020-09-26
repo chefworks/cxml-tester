@@ -1,14 +1,9 @@
 import os
 
-from flask import Blueprint
-from flask import flash
-from flask import render_template
-from flask import request
-from flask import session
+from flask import Blueprint, flash, render_template, request, session
 from lxml import etree
 
-from util import cxml
-from util import xslt
+from util import cxml, xslt
 
 bp = Blueprint("cxml", __name__)
 
@@ -83,17 +78,7 @@ def cxml_order():
         session['secret'] = secret
         session['identity'] = identity
 
-        result = post_cxml(endpoint, data, xdebug)
-
-        if not result.ok:
-            flash("%d %s%s" % (result.status_code, result.reason, (': ' + result.text if result.text else '')))
-        else:
-            cxml_response = result.text
-            try:
-                xml = cxml.load_cxml(cxml_response.encode())
-            except:
-                flash('corrupt response cXML')
-            pass
+        xml, cxml_response = post_cxml(endpoint, data, xdebug)
 
     return render_template(
         'cxml/order.html',
@@ -111,7 +96,25 @@ def post_cxml(url, data, xdebug=False):
     if xdebug:
         headers['Cookie'] = 'XDEBUG_SESSION=PHPSTORM'
         pass
-    return cxml.post(url, data, headers=headers)
+
+    result = cxml.post(url, data, headers=headers)
+    xml = None
+    content = ''
+    
+    if result.ok:
+        
+        content = result.text
+        try:
+            xml = cxml.load_cxml(content.encode())
+        except Exception as e:
+            flash('corrupt response cXML')
+        pass
+    else:
+        result_text = (': ' + result.text if result.text else '')
+        flash("%d %s%s" % (result.status_code, result.reason, result_text))
+        pass
+
+    return xml, content
 
 
 @bp.route("/", methods=["GET", "POST"])
@@ -122,10 +125,9 @@ def cxml_request():
     identity = session.get('identity', '')
     content = ''
     start_url = ''
-    error = None
     form_post = request.url + 'cart'
     auxiliary_id = ''
-    
+
     if request.method == "POST":
         cxml_data = request.form["cxml"]
         endpoint = request.form["endpoint"]
@@ -140,7 +142,8 @@ def cxml_request():
         session['identity'] = identity
         session['cxml_data'] = cxml_data
     else:
-        cxml_data = session.get('cxml_data', '') or open(os.path.join(os.path.dirname(__file__), 'cxml', 'create.xml')).read()
+        cxml_path = os.path.join(os.path.dirname(__file__), 'cxml', 'create.xml')
+        cxml_data = session.get('cxml_data', '') or open(cxml_path).read()
         pass
 
     try:
@@ -153,17 +156,9 @@ def cxml_request():
         )
 
         if request.method == "POST":
-            result = post_cxml(endpoint, data, xdebug)
-
-            if not result.ok:
-                flash("%d %s%s" % (result.status_code, result.reason, (': ' + result.text if result.text else '')))
-            else:
-                content = result.text
-                try:
-                    xml = cxml.load_cxml(content.encode())
-                    start_url = cxml.cxml_extract(xml, cxml.XPATH_START_URL)
-                except:
-                    flash('corrupt response cXML')
+            xml, content = post_cxml(endpoint, data, xdebug)
+            if xml:
+                start_url = cxml.cxml_extract(xml, cxml.XPATH_START_URL)
                 pass
             pass
 
@@ -181,4 +176,3 @@ def cxml_request():
         form_post=form_post,
         cxml=cxml_data
     )
-
