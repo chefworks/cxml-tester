@@ -4,27 +4,27 @@
     <Header>
         <From>
             <Credential domain="NetworkID">
-                <Identity>hilton1</Identity>
+                <Identity>superman42</Identity>
             </Credential>
         </From>
         <To>
             <Credential domain="birchstreet.com">
-                <Identity>765001</Identity>
+                <Identity>123456</Identity>
             </Credential>
         </To>
         <Sender>
             <Credential domain="birchstreet.com">
-                <Identity>pillar2178</Identity>
-                <SharedSecret>21848</SharedSecret>
+                <Identity>superman42</Identity>
+                <SharedSecret>12345</SharedSecret>
             </Credential>
             <UserAgent>V7</UserAgent>
         </Sender>
     </Header>
     <Request deploymentMode="production">
         <PunchOutSetupRequest operation="create">
-            <BuyerCookie>4-20-2016-16-34-19-286-CYCHICOGM</BuyerCookie>
+            <BuyerCookie>x-yz-2016-16-34-19-286-BABABUBAM</BuyerCookie>
             <BrowserFormPost>
-                <URL>https://www14.birchstreetsystems.com:443/j4/ReceiveItemsPunchout.jsp</URL>
+                <URL>https://example.com/receive-itemsp-unchout</URL>
             </BrowserFormPost>
         </PunchOutSetupRequest>
     </Request>
