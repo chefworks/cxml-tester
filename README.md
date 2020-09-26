@@ -23,3 +23,8 @@ make run
 Then go to http://localhost:8080
 
 
+## Running using docker
+
+```
+docker run -d -p 8080:8080 chefworks/cxml-tester
+```
