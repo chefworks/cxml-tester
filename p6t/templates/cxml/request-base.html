@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% block cxml_content %}
+        <div class="cxml-content{% if cxml_status_code != None %} posted{% endif %}" data-status-code="{{ cxml_status_code or 200 }}">
+            {% block cxml_content_top_extra %}{% endblock %}
+            {% block cxml_form %}
+                <form method="post" {% block form_action %}{% endblock %}>
+                    {% block cxml_form_top_extra %}{% endblock %}
+                    {% block cxml_form_common_input_vars %}
+                        {% block cxml_subst_vars %}
+                            <label for="endpoint">End point URL</label>
+                            <input name="endpoint" id="endpoint" value="{{ endpoint }}" required>
+                            <label for="identity">From identity</label>
+                            <input name="identity" id="identity" value="{{ identity }}">
+                            <label for="secret">Sender shared secrete</label>
+                            <input name="secret" id="secret" value="{{ secret }}">
+                            <label for="auxiliary_id">Auxiliary ID</label>
+                            <input name="auxiliary_id" id="auxiliary_id" value="{{ request.form['auxiliary_id'] }}">
+                        {% endblock %}
+                        <label for="xdebug">XDEBUG</label>
+                        <input name="xdebug" id="xdebug" type="checkbox">
+                    {% endblock %}
+                    {% block cxml_form_input_vars %}
+                        <label for="cxml">cXML</label>
+                        <textarea name="cxml" id="cxml">{{ cxml }}</textarea>
+                    {% endblock %}
+                    {% block cxml_form_submit %}
+                        <input type="submit" value="Send">
+                    {% endblock %}
+                    {% block cxml_form_result %}
+                        <hr/>
+                        <label for="response">Response</label>
+                        <textarea name="response" id="response" readonly>{{ cxml_response }}</textarea>
+                    {% endblock %}
+                    {% block cxml_form_bottom_extra %}{% endblock %}
+                </form>
+            {% endblock %}
+            {% block cxml_content_bottom_extra %}{% endblock %}
+        </div>
+    {% endblock %}
+{% endblock %}

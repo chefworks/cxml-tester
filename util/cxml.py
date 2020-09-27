@@ -11,6 +11,7 @@ XPATH_POST_URL = '/cXML/Request/PunchOutSetupRequest/BrowserFormPost/URL'
 XPATH_SHARED_SECRET = '//Header/Sender/Credential/SharedSecret'
 XPATH_START_URL = '//Response/PunchOutSetupResponse/StartPage/URL'
 XPATH_AUXILIARY_ID = '//SupplierPartAuxiliaryID'
+XPATH_STATUS_CODE = '/cXML/Response/Status/@code'
 
 
 def get_proxy():
@@ -130,4 +131,12 @@ def load_cxml(cxml: bytes or str, subst_vars: dict = {}) -> etree.ElementBase:
 def cxml_extract(cxml: str or etree.ElementBase, xpath: str) -> str:
     xml = load_cxml(cxml.encode()) if type(cxml) == str else cxml
     arr = xml.xpath(xpath)
-    return arr[0].text if len(arr) else ''
+    if not arr:
+        return ''
+
+    res = arr[0]
+
+    if hasattr(res, 'text'):
+        return res.text  # element result
+
+    return str(res)  # attribute result

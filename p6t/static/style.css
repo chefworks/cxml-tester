@@ -137,3 +137,16 @@ input[type=submit] {
   width: 100%;
   min-height: 40em;
 }
+
+.cxml-content {
+  padding: 1em;
+  border: 4px solid transparent;
+}
+
+.cxml-content.posted {
+  border: 4px solid red;
+}
+
+.cxml-content.posted[data-status-code^='2'] {
+  border: 4px solid green;
+}

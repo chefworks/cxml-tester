@@ -75,13 +75,14 @@ def cxml_order():
     cart_cxml = request.form['cart_cxml']
 
     if new_cart:
-        order_cxml = cart2order(request.form['cart_cxml'], identity, secret)
+        cxml_status_code = None
+        cxml = cart2order(request.form['cart_cxml'], identity, secret)
     else:
-        order_cxml = request.form['order_cxml']
+        cxml = request.form['cxml']
         auxiliary_id = request.form.get('auxiliary_id')
         xdebug = request.form.get('xdebug', '')
         data = preprocess_cxml(
-            order_cxml or None,
+            cxml or None,
             identity or None,
             secret or None,
             None,
@@ -91,16 +92,21 @@ def cxml_order():
         session['secret'] = secret
         session['identity'] = identity
 
-        xml, cxml_response = post_cxml(endpoint, data, xdebug)
+        xml, cxml_response, cxml_status_code = post_cxml(
+            endpoint,
+            data,
+            xdebug
+        )
 
     return render_template(
         'cxml/order.html',
         cart_cxml=cart_cxml,
-        order_cxml=order_cxml,
+        cxml=cxml,
         endpoint=endpoint,
         identity=identity,
         secret=secret,
-        cxml_response=cxml_response
+        cxml_response=cxml_response,
+        cxml_status_code=cxml_status_code
     )
 
 
@@ -113,12 +119,14 @@ def post_cxml(url, data, xdebug=False):
     result = cxml.post(url, data, headers=headers)
     xml = None
     content = ''
+    cxml_status_code = '500'
 
     if result.ok:
 
         content = result.text
         try:
             xml = cxml.load_cxml(content.encode())
+            cxml_status_code = cxml.cxml_extract(xml, cxml.XPATH_STATUS_CODE)
         except Exception:
             flash('corrupt response cXML')
         pass
@@ -127,7 +135,7 @@ def post_cxml(url, data, xdebug=False):
         flash("%d %s%s" % (result.status_code, result.reason, result_text))
         pass
 
-    return xml, content
+    return xml, content, cxml_status_code
 
 
 @bp.route("/reset")
@@ -147,7 +155,8 @@ def cxml_request():
     secret = session.get('secret', settings.SECRET)
     endpoint = session.get('endpoint', settings.ENDPOINT)
     identity = session.get('identity', settings.IDENTITY)
-    content = ''
+    cxml_response = ''
+    cxml_status_code = None
     start_url = ''
     form_post = request.url + 'cart'
     auxiliary_id = ''
@@ -185,7 +194,11 @@ def cxml_request():
         )
 
         if request.method == "POST":
-            xml, content = post_cxml(endpoint, data, xdebug)
+            xml, cxml_response, cxml_status_code = post_cxml(
+                endpoint,
+                data,
+                xdebug
+            )
             if xml:
                 start_url = cxml.cxml_extract(xml, cxml.XPATH_START_URL)
                 pass
@@ -197,11 +210,12 @@ def cxml_request():
 
     return render_template(
         'cxml/request.html',
-        content=content,
+        cxml_response=cxml_response,
         endpoint=endpoint,
         secret=secret,
         identity=identity,
         start_url=start_url,
         form_post=form_post,
-        cxml=cxml_data
+        cxml=cxml_data,
+        cxml_status_code=cxml_status_code
     )

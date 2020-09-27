@@ -1,29 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'cxml/request-base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Cart OrderMessageOut{% endblock %}</h1>
+  <h1>{% block title %}OrderRequest{% endblock %}</h1>
 {% endblock %}
 
-{% block content %}
-<form method="post">
+{% block cxml_form_top_extra %}
   <label for="cart_cxml">Cart</label>
   <textarea name="cart_cxml" id="cart_cxml" readonly>{{ cart_cxml }}</textarea>
   <hr/>
-  <label for="endpoint">End point URL</label>
-  <input name="endpoint" id="endpoint" value="{{ endpoint }}" required>
-  <label for="identity">From identity</label>
-  <input name="identity" id="identity" value="{{ identity }}">
-  <label for="secret">Sender shared secrete</label>
-  <input name="secret" id="secret" value="{{ secret }}">
-  <label for="auxiliary_id">Auxiliary ID</label>
-  <input name="auxiliary_id" id="auxiliary_id" value="{{ request.form['auxiliary_id'] }}">
-  <label for="xdebug">XDEBUG</label>
-  <input name="xdebug" id="xdebug" type="checkbox">
-  <label for="order_cxml">Cart converted to order request</label>
-  <textarea name="order_cxml" id="order_cxml">{{ order_cxml }}</textarea>
-  <input type="submit" value="Submit Order">
-  <hr/>
-  <label for="cxml_response">Response</label>
-  <textarea name="cxml_response" id="cxml_response" readonly>{{ cxml_response }}</textarea>
-</form>
 {% endblock %}

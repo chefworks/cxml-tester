@@ -1,30 +1,16 @@
-{% extends 'base.html' %}
+{% extends 'cxml/request-base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Submit cXML Request data{% endblock %}</h1>
+  <h1>{% block title %}cXML Request{% endblock %}</h1>
 {% endblock %}
 
-{% block content %}
-  <form method="post">
-    <label for="endpoint">End point URL</label>
-    <input name="endpoint" id="endpoint" value="{{ endpoint }}" required>
-    <label for="identity">From identity</label>
-    <input name="identity" id="identity" value="{{ identity }}">
-    <label for="secret">Sender shared secrete</label>
-    <input name="secret" id="secret" value="{{ secret }}">
-    <label for="form_post">Form Post</label>
-    <input name="form_post" id="form_post" value="{{ form_post }}">
-    <label for="auxiliary_id">Auxiliary ID</label>
-    <input name="auxiliary_id" id="auxiliary_id" value="{{ request.form['auxiliary_id'] }}">
-    <label for="xdebug">XDEBUG</label>
-    <input name="xdebug" id="xdebug" type="checkbox">
-    <label for="cxml">cXML</label>
-    <textarea name="cxml" id="cxml">{{ cxml }}</textarea>
-    <input type="submit" value="Send">
-    <hr/>
-    <label for="result">Result</label>
-    <textarea name="result" id="result" readonly>{{ content }}</textarea>
-  </form>
+{% block cxml_subst_vars %}
+{{ super() }}
+<label for="form_post">Form Post</label>
+<input name="form_post" id="form_post" value="{{ form_post }}">
+{% endblock %}
+
+{% block cxml_content_bottom_extra %}
 Start URL: {% if start_url %}<a href="{{ start_url }}" target="_blank">{{ start_url }}</a><br/>
   <iframe name="provider_site" class="provider-site" src="{{ start_url }}"></iframe>
 {% endif %}
