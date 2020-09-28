@@ -37,15 +37,7 @@ def preprocess_cxml(
 
 @bp.route("/cart", methods=["POST"])
 def cxml_cart():
-    cxml_base64 = request.form['cxml-base64']
-    xml = cxml.decode_cxml(cxml_base64)
-    cxml_decoded = etree.tostring(xml, pretty_print=True)
-
-    if type(cxml_decoded) == bytes:
-        cxml_text = cxml_decoded.decode()
-    else:
-        cxml_text = cxml_decoded
-        pass
+    cxml_text = get_cxml_base64()
 
     return render_template(
         'cxml/cart.html',
@@ -53,60 +45,88 @@ def cxml_cart():
     )
 
 
-def cart2order(cart_cxml: str, identity: str, secret: str) -> str:
+def get_cxml_base64():
+    cxml_base64 = request.form['cxml-base64']
+    xml = cxml.decode_cxml(cxml_base64)
+    cxml_decoded = etree.tostring(xml, pretty_print=True)
+    if type(cxml_decoded) == bytes:
+        cxml_text = cxml_decoded.decode()
+    else:
+        cxml_text = cxml_decoded
+        pass
+    return cxml_text
+
+
+def cart2order(cart_cxml: str, identity: str, secret: str, deployment_mode: str) -> str:
+
     return xslt(
         cart_cxml,
         os.path.join(os.path.dirname(__file__), 'xsl', 'cart2order.xsl'),
         identity=identity,
-        secret=secret
+        secret=secret,
+        deployment_mode=deployment_mode
     )
 
 
-@bp.route("/order", methods=["POST"])
+@bp.route("/order", methods=["POST", "GET"])
 def cxml_order():
-    new_cart = request.form.get('new_cart')
+    new_cart_external = request.form.get('new_cart_external')  # form was submitted from cart.html
+    new_cart = new_cart_external or request.form.get('new_cart')  # convert cart submit button in order.html was pressed
+
     # init secret, endpoint, identity from session if new cart
-    var_src = session if new_cart else request.form
+    if new_cart_external or request.method == 'GET':
+        var_src = session
+    else:
+        var_src = request.form
+        pass
 
     secret = var_src.get('secret', settings.SECRET)
     endpoint = var_src.get('endpoint', settings.ENDPOINT)
     identity = var_src.get('identity', settings.IDENTITY)
+    deployment_mode = var_src.get('deployment_mode') or settings.DEPLOYMENT_MODE
+    cart_cxml = ''
+    cxml_status_code = None
     cxml_response = ''
-    cart_cxml = request.form['cart_cxml']
+    order_cxml = ''
 
-    if new_cart:
-        cxml_status_code = None
-        cxml = cart2order(request.form['cart_cxml'], identity, secret)
-    else:
-        cxml = request.form['cxml']
-        auxiliary_id = request.form.get('auxiliary_id')
-        xdebug = request.form.get('xdebug', '')
-        data = preprocess_cxml(
-            cxml or None,
-            identity or None,
-            secret or None,
-            None,
-            auxiliary_id or None
-        )
-        session['endpoint'] = endpoint
-        session['secret'] = secret
-        session['identity'] = identity
+    if request.method == 'POST':
+        cart_cxml = request.form['cart_cxml']
 
-        xml, cxml_response, cxml_status_code = post_cxml(
-            endpoint,
-            data,
-            xdebug
-        )
+        if new_cart:
+            order_cxml = cart2order(cart_cxml, identity, secret, deployment_mode)
+        else:
+            order_cxml = request.form['cxml']
+            auxiliary_id = request.form.get('auxiliary_id')
+            xdebug = request.form.get('xdebug', '')
+            data = preprocess_cxml(
+                order_cxml or None,
+                identity or None,
+                secret or None,
+                None,
+                auxiliary_id or None
+            )
+            session['endpoint'] = endpoint
+            session['secret'] = secret
+            session['identity'] = identity
+
+            xml, cxml_response, cxml_status_code = post_cxml(
+                endpoint,
+                data,
+                xdebug
+            )
+            pass
+        pass
 
     return render_template(
         'cxml/order.html',
         cart_cxml=cart_cxml,
-        cxml=cxml,
+        cxml=order_cxml,
         endpoint=endpoint,
         identity=identity,
         secret=secret,
         cxml_response=cxml_response,
-        cxml_status_code=cxml_status_code
+        cxml_status_code=cxml_status_code,
+        deployment_mode=deployment_mode
     )
 
 
@@ -155,6 +175,8 @@ def cxml_request():
     secret = session.get('secret', settings.SECRET)
     endpoint = session.get('endpoint', settings.ENDPOINT)
     identity = session.get('identity', settings.IDENTITY)
+    deployment_mode = session.get('deployment_mode', settings.DEPLOYMENT_MODE)
+
     cxml_response = ''
     cxml_status_code = None
     start_url = ''
@@ -217,5 +239,6 @@ def cxml_request():
         start_url=start_url,
         form_post=form_post,
         cxml=cxml_data,
-        cxml_status_code=cxml_status_code
+        cxml_status_code=cxml_status_code,
+        deployment_mode=deployment_mode
     )

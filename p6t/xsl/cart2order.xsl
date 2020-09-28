@@ -4,7 +4,7 @@
 
   <xsl:param name="identity"/>
   <xsl:param name="secret">baba</xsl:param>
-  <xsl:param name="deploymentMode">test</xsl:param>
+  <xsl:param name="deployment_mode">test</xsl:param>
   <xsl:param name="python"/>
 
   <xsl:output method="xml" indent="yes" encoding="utf-8"/>
@@ -29,9 +29,9 @@
   <xsl:template match="Sender/Credential">
     <xsl:copy>
       <xsl:apply-templates select="*[name() != 'SharedSecret']|@*|text()"/>
-      <!--      <xsl:if test="$secret">
+      <xsl:if test="$secret">
         <SharedSecret><xsl:value-of select="$secret"/></SharedSecret>
-      </xsl:if> -->
+      </xsl:if>
     </xsl:copy>
   </xsl:template>
 
@@ -42,7 +42,7 @@
   </xsl:template>
   
   <xsl:template match="Message">
-    <Request deploymentMode="{$deploymentMode}">
+    <Request deploymentMode="{$deployment_mode}">
       <OrderRequest>
         <xsl:apply-templates select="PunchOutOrderMessage/PunchOutOrderMessageHeader"/>
         <xsl:apply-templates select="PunchOutOrderMessage/ItemIn"/>

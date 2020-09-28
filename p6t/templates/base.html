@@ -2,7 +2,8 @@
 <title>{% block title %}{% endblock %} - cXML Tester</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <nav>
-  <h1><a href="{{ url_for('cxml.cxml_request') }}">Post</a></h1>
+  <h1><a href="{{ url_for('cxml.cxml_request') }}">Request</a></h1>
+  <h1><a href="{{ url_for('cxml.cxml_order') }}">Order</a></h1>
   <h1><a href="{{ url_for('cxml.cxml_reset') }}">Reset</a></h1>
 </nav>
 <section class="content">

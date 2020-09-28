@@ -16,6 +16,8 @@
                             <input name="secret" id="secret" value="{{ secret }}">
                             <label for="auxiliary_id">Auxiliary ID</label>
                             <input name="auxiliary_id" id="auxiliary_id" value="{{ request.form['auxiliary_id'] }}">
+                            <label for="deployment_mode">Deployment Mode</label>
+                            <input name="deployment_mode" id="deployment_mode" value="{{ request.form['deployment_mode'] }}">
                         {% endblock %}
                         <label for="xdebug">XDEBUG</label>
                         <input name="xdebug" id="xdebug" type="checkbox">
@@ -25,7 +27,7 @@
                         <textarea name="cxml" id="cxml">{{ cxml }}</textarea>
                     {% endblock %}
                     {% block cxml_form_submit %}
-                        <input type="submit" value="Send">
+                        <input type="submit" tabindex="0" name="cxml_post" value="Send">
                     {% endblock %}
                     {% block cxml_form_result %}
                         <hr/>

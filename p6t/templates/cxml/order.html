@@ -6,6 +6,7 @@
 
 {% block cxml_form_top_extra %}
   <label for="cart_cxml">Cart</label>
-  <textarea name="cart_cxml" id="cart_cxml" readonly>{{ cart_cxml }}</textarea>
+  <textarea name="cart_cxml" id="cart_cxml">{{ cart_cxml }}</textarea>
+  <input type="submit" name="new_cart" tabindex="1" value="Convert to order">
   <hr/>
 {% endblock %}
