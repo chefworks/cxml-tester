@@ -6,7 +6,8 @@ def xslt(xml, xsl_file: str, **params):
     dom = etree.XML(xml)
     transform = etree.XSLT(xt)
 
-    # below, filter out empty params - xslt seems to have a problem with empty params passed to template
+    # below, filter out empty params - xslt seems to have a problem with empty
+    # params passed to template
     new_params = {}
     for i in params:
         if params[i]:

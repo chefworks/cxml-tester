@@ -1,5 +1,7 @@
 AUTO_FIX_IMPORTS ?= 0
 
+CXML_TESTER_RELEASE = 0.0.2
+
 PORT ?= 8080
 
 ifneq ($(AUTO_FIX_IMPORTS), 1)
@@ -69,6 +71,10 @@ endif
 docker-flask-prod:
 	docker pull $(DOCKER_IMG_TAG)
 	docker run $(DOCKER_RUN_ARGS) -p 8080:8080 --name flask-prod $(DOCKER_IMG_TAG):$(DOCKER_IMG_VERSION) make run-flask-prod $(DOCKER_RUN_EXTRA_ARGS)
+
+git-tag:
+	git tag $(CXML_TESTER_RELEASE)
+	git push origin $(CXML_TESTER_RELEASE)
 
 .PHONY: docker
 

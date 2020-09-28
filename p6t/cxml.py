@@ -57,7 +57,12 @@ def get_cxml_base64():
     return cxml_text
 
 
-def cart2order(cart_cxml: str, identity: str, secret: str, deployment_mode: str) -> str:
+def cart2order(
+        cart_cxml: str,
+        identity: str,
+        secret: str,
+        deployment_mode: str
+) -> str:
 
     return xslt(
         cart_cxml,
@@ -70,8 +75,10 @@ def cart2order(cart_cxml: str, identity: str, secret: str, deployment_mode: str)
 
 @bp.route("/order", methods=["POST", "GET"])
 def cxml_order():
-    new_cart_external = request.form.get('new_cart_external')  # form was submitted from cart.html
-    new_cart = new_cart_external or request.form.get('new_cart')  # convert cart submit button in order.html was pressed
+    # form was submitted from cart.html
+    new_cart_external = request.form.get('new_cart_external')
+    # convert cart submit button in order.html was pressed
+    new_cart = new_cart_external or request.form.get('new_cart')
 
     # init secret, endpoint, identity from session if new cart
     if new_cart_external or request.method == 'GET':
@@ -83,7 +90,9 @@ def cxml_order():
     secret = var_src.get('secret', settings.SECRET)
     endpoint = var_src.get('endpoint', settings.ENDPOINT)
     identity = var_src.get('identity', settings.IDENTITY)
-    deployment_mode = var_src.get('deployment_mode') or settings.DEPLOYMENT_MODE
+    deployment_mode = (
+            var_src.get('deployment_mode') or settings.DEPLOYMENT_MODE
+    )
     cart_cxml = ''
     cxml_status_code = None
     cxml_response = ''
@@ -93,7 +102,12 @@ def cxml_order():
         cart_cxml = request.form['cart_cxml']
 
         if new_cart:
-            order_cxml = cart2order(cart_cxml, identity, secret, deployment_mode)
+            order_cxml = cart2order(
+                cart_cxml,
+                identity,
+                secret,
+                deployment_mode
+            )
         else:
             order_cxml = request.form['cxml']
             auxiliary_id = request.form.get('auxiliary_id')
