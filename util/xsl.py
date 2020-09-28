@@ -10,9 +10,7 @@ def xslt(xml, xsl_file: str, **params):
     # params passed to template
     new_params = {}
     for i in params:
-        if params[i]:
-            new_params[i] = params[i]
-            pass
+        new_params[i] = etree.XSLT.strparam(params[i])
         pass
 
     new_params['python'] = "1"

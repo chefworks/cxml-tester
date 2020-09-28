@@ -93,6 +93,8 @@ def cxml_order():
     deployment_mode = (
             var_src.get('deployment_mode') or settings.DEPLOYMENT_MODE
     )
+    auxiliary_id = var_src.get('auxiliary_id')
+
     cart_cxml = ''
     cxml_status_code = None
     cxml_response = ''
@@ -100,6 +102,12 @@ def cxml_order():
 
     if request.method == 'POST':
         cart_cxml = request.form['cart_cxml']
+
+        session['endpoint'] = endpoint
+        session['secret'] = secret
+        session['identity'] = identity
+        session['deployment_mode'] = deployment_mode
+        session['auxiliary_id'] = auxiliary_id
 
         if new_cart:
             order_cxml = cart2order(
@@ -110,7 +118,6 @@ def cxml_order():
             )
         else:
             order_cxml = request.form['cxml']
-            auxiliary_id = request.form.get('auxiliary_id')
             xdebug = request.form.get('xdebug', '')
             data = preprocess_cxml(
                 order_cxml or None,
@@ -119,9 +126,6 @@ def cxml_order():
                 None,
                 auxiliary_id or None
             )
-            session['endpoint'] = endpoint
-            session['secret'] = secret
-            session['identity'] = identity
 
             xml, cxml_response, cxml_status_code = post_cxml(
                 endpoint,
@@ -174,7 +178,13 @@ def post_cxml(url, data, xdebug=False):
 
 @bp.route("/reset")
 def cxml_reset():
-    for i in ['endpoint', 'secret', 'identity', 'cxml_data']:
+    for i in [
+            'endpoint',
+            'secret',
+            'identity',
+            'cxml_data',
+            'deployment_mode'
+    ]:
         if i in session:
             del session[i]
             pass
@@ -189,7 +199,9 @@ def cxml_request():
     secret = session.get('secret', settings.SECRET)
     endpoint = session.get('endpoint', settings.ENDPOINT)
     identity = session.get('identity', settings.IDENTITY)
-    deployment_mode = session.get('deployment_mode', settings.DEPLOYMENT_MODE)
+    deployment_mode = (
+        session.get('deployment_mode') or settings.DEPLOYMENT_MODE
+    )
 
     cxml_response = ''
     cxml_status_code = None
@@ -205,11 +217,14 @@ def cxml_request():
         form_post = request.form["form_post"]
         xdebug = request.form.get('xdebug', '')
         auxiliary_id = request.form['auxiliary_id']
+        deployment_mode = request.form['deployment_mode']
 
         session['endpoint'] = endpoint
         session['secret'] = secret
         session['identity'] = identity
         session['cxml_data'] = cxml_data
+        session['deployment_mode'] = deployment_mode
+
     else:
         cxml_path = os.path.join(
             os.path.dirname(__file__),

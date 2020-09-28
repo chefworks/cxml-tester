@@ -3,8 +3,8 @@
                 version="1.0">
 
   <xsl:param name="identity"/>
-  <xsl:param name="secret">baba</xsl:param>
-  <xsl:param name="deployment_mode">test</xsl:param>
+  <xsl:param name="secret"/>
+  <xsl:param name="deployment_mode" select="'test'"/>
   <xsl:param name="python"/>
 
   <xsl:output method="xml" indent="yes" encoding="utf-8"/>

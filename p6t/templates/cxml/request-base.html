@@ -15,9 +15,9 @@
                             <label for="secret">Sender shared secrete</label>
                             <input name="secret" id="secret" value="{{ secret }}">
                             <label for="auxiliary_id">Auxiliary ID</label>
-                            <input name="auxiliary_id" id="auxiliary_id" value="{{ request.form['auxiliary_id'] }}">
+                            <input name="auxiliary_id" id="auxiliary_id" value="{{ auxiliary_id }}">
                             <label for="deployment_mode">Deployment Mode</label>
-                            <input name="deployment_mode" id="deployment_mode" value="{{ request.form['deployment_mode'] }}">
+                            <input name="deployment_mode" id="deployment_mode" value="{{ deployment_mode }}">
                         {% endblock %}
                         <label for="xdebug">XDEBUG</label>
                         <input name="xdebug" id="xdebug" type="checkbox">
