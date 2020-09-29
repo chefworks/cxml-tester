@@ -12,6 +12,7 @@ XPATH_SHARED_SECRET = '//Header/Sender/Credential/SharedSecret'
 XPATH_START_URL = '//Response/PunchOutSetupResponse/StartPage/URL'
 XPATH_AUXILIARY_ID = '//SupplierPartAuxiliaryID'
 XPATH_STATUS_CODE = '/cXML/Response/Status/@code'
+XPATH_DEPLOYMENT_MODE = '/cXML/Request/@deploymentMode'
 
 
 def get_proxy():
@@ -118,9 +119,23 @@ def load_cxml(cxml: bytes or str, subst_vars: dict = {}) -> etree.ElementBase:
     for xpath in subst_vars:
         subst_value = subst_vars[xpath]
 
-        if subst_value is not None:
-            for u in xml.xpath(xpath):
-                u.text = subst_value
+        if subst_value:
+            # this is an attribute xpath
+            # e.g. /cXML/Request/@deploymentMode
+            arr = xpath.split('/@')
+            attr = None
+            if len(arr) > 1:
+                el_xpath, attr = arr
+            else:
+                el_xpath = arr[0]
+                pass
+
+            for u in xml.xpath(el_xpath):
+                if attr:
+                    u.attrib[attr] = subst_value
+                else:
+                    u.text = subst_value
+                    pass
                 pass
             pass
         pass

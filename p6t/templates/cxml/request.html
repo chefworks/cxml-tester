@@ -6,12 +6,12 @@
 
 {% block cxml_subst_vars %}
 {{ super() }}
-<label for="browser_post_form">Browser Post Form</label>
-<input name="browser_post_form" id="browser_post_form" value="{{ browser_post_form }}">
+<label for="browser_post_url">Browser Post Form</label>
+<input name="browser_post_url" id="browser_post_url" value="{{ browser_post_url }}">
 {% endblock %}
 
 {% block cxml_content_bottom_extra %}
-Start URL: {% if start_url %}<a href="{{ start_url }}" target="_blank">{{ start_url }}</a><br/>
+Start URL: {% if start_url != '' %}<a href="{{ start_url }}" target="_blank">{{ start_url }}</a><br/>
   <iframe name="provider_site" class="provider-site" src="{{ start_url }}"></iframe>
 {% endif %}
 {% endblock %}

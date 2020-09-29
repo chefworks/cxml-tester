@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
     {% block cxml_content %}
-        <div class="cxml-content{% if cxml_status_code != None %} posted{% endif %}" data-status-code="{{ cxml_status_code or 200 }}">
+        <div class="cxml-content{% if cxml_status_code.val %} posted{% endif %}" data-status-code="{{ cxml_status_code or 200 }}">
             {% block cxml_content_top_extra %}{% endblock %}
             {% block cxml_form %}
                 <form method="post" {% block form_action %}{% endblock %}>
@@ -13,10 +13,14 @@
                             <input name="identity" id="identity" value="{{ identity }}">
                             <label for="secret">Sender shared secrete</label>
                             <input name="secret" id="secret" value="{{ secret }}">
+                            <label for="auxiliary_id">Auxiliary ID</label>
+                            <input name="auxiliary_id" id="auxiliary_id" value="{{ auxiliary_id }}">
+                            <label for="deployment_mode">Deployment Mode</label>
+                            <input name="deployment_mode" id="deployment_mode" value="{{ deployment_mode }}">
                         {% endblock %}
                         <hr/>
                         <label for="xdebug">XDEBUG</label>
-                        <input name="xdebug" id="xdebug" type="checkbox">
+                        <input name="xdebug" id="xdebug" type="checkbox" {% if xdebug.val %}checked{% endif %}>
                     {% endblock %}
                     {% block cxml_form_input_vars %}
                         <label for="cxml">cXML</label>
