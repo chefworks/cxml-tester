@@ -29,8 +29,16 @@
   <xsl:template match="Sender/Credential">
     <xsl:copy>
       <xsl:apply-templates select="*[name() != 'SharedSecret']|@*|text()"/>
+      <xsl:choose>
+        <xsl:when test="$secret = 'null' or $secret = 'none' or $secret = 'delete'"/>
+        <xsl:when test="$secret">
+          <SharedSecret><xsl:value-of select="$secret"/></SharedSecret>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="SharedSecret"/>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:if test="$secret">
-        <SharedSecret><xsl:value-of select="$secret"/></SharedSecret>
       </xsl:if>
     </xsl:copy>
   </xsl:template>
