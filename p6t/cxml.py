@@ -68,7 +68,7 @@ class CxmlBase:
         for i in self.template_vars:
             spec = self.template_vars[i]
             if spec.sync_session:
-                session[i] = spec.val
+                session[spec.session_var_prefix + i] = spec.val
                 pass
             pass
 
@@ -296,6 +296,7 @@ class CxmlSetupRequest(CxmlBase):
         )
 
         self.cxml_var.session_var_prefix = 'request_'
+        self.endpoint_var.session_var_prefix = 'request_'
 
         self.init_vars()
 
