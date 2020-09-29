@@ -15,7 +15,7 @@ def preprocess_cxml(
         xml: str,
         identity=None,
         secret=None,
-        form_post=None,
+        browser_post_form=None,
         auxiliary_id=None
 ):
     try:
@@ -24,7 +24,7 @@ def preprocess_cxml(
             subst_vars={
                 cxml.XPATH_PUNCHOUT_IDENTITY: identity,
                 cxml.XPATH_SHARED_SECRET: secret,
-                cxml.XPATH_POST_URL: form_post,
+                cxml.XPATH_POST_URL: browser_post_form,
                 cxml.XPATH_AUXILIARY_ID: auxiliary_id
             }
         )
@@ -93,7 +93,7 @@ def cxml_order():
     deployment_mode = (
             var_src.get('deployment_mode') or settings.DEPLOYMENT_MODE
     )
-    auxiliary_id = var_src.get('auxiliary_id')
+    auxiliary_id = request.form.get('auxiliary_id') or var_src.get('auxiliary_id')
 
     cart_cxml = ''
     cxml_status_code = None
@@ -199,14 +199,11 @@ def cxml_request():
     secret = session.get('secret', settings.SECRET)
     endpoint = session.get('endpoint', settings.ENDPOINT)
     identity = session.get('identity', settings.IDENTITY)
-    deployment_mode = (
-        session.get('deployment_mode') or settings.DEPLOYMENT_MODE
-    )
 
     cxml_response = ''
     cxml_status_code = None
     start_url = ''
-    form_post = request.url + 'cart'
+    browser_post_form = request.url + 'cart'
     auxiliary_id = ''
 
     if request.method == "POST":
@@ -214,16 +211,13 @@ def cxml_request():
         endpoint = request.form["endpoint"]
         identity = request.form["identity"]
         secret = request.form["secret"]
-        form_post = request.form["form_post"]
+        browser_post_form = request.form["browser_post_form"]
         xdebug = request.form.get('xdebug', '')
-        auxiliary_id = request.form['auxiliary_id']
-        deployment_mode = request.form['deployment_mode']
 
         session['endpoint'] = endpoint
         session['secret'] = secret
         session['identity'] = identity
         session['cxml_data'] = cxml_data
-        session['deployment_mode'] = deployment_mode
 
     else:
         cxml_path = os.path.join(
@@ -240,7 +234,7 @@ def cxml_request():
             cxml_data or None,
             identity or None,
             secret or None,
-            form_post or None,
+            browser_post_form or None,
             auxiliary_id or None
         )
 
@@ -266,8 +260,7 @@ def cxml_request():
         secret=secret,
         identity=identity,
         start_url=start_url,
-        form_post=form_post,
+        browser_post_form=browser_post_form,
         cxml=cxml_data,
-        cxml_status_code=cxml_status_code,
-        deployment_mode=deployment_mode
+        cxml_status_code=cxml_status_code
     )

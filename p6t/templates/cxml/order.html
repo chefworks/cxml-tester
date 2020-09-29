@@ -4,9 +4,21 @@
   <h1>{% block title %}OrderRequest{% endblock %}</h1>
 {% endblock %}
 
-{% block cxml_form_top_extra %}
+{% block cxml_form_common_input_vars %}
   <label for="cart_cxml">Cart</label>
   <textarea name="cart_cxml" id="cart_cxml">{{ cart_cxml }}</textarea>
   <input type="submit" name="new_cart" tabindex="1" value="Convert to order">
   <hr/>
+  {{ super() }}
 {% endblock %}
+
+{% block cxml_subst_vars %}
+  {{ super() }}
+  <hr/>
+  <label for="auxiliary_id">Auxiliary ID</label>
+  <input name="auxiliary_id" id="auxiliary_id" value="{{ auxiliary_id }}">
+  <label for="deployment_mode">Deployment Mode</label>
+  <input name="deployment_mode" id="deployment_mode" value="{{ deployment_mode }}">
+{% endblock %}
+
+

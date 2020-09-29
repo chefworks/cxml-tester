@@ -5,7 +5,6 @@
             {% block cxml_content_top_extra %}{% endblock %}
             {% block cxml_form %}
                 <form method="post" {% block form_action %}{% endblock %}>
-                    {% block cxml_form_top_extra %}{% endblock %}
                     {% block cxml_form_common_input_vars %}
                         {% block cxml_subst_vars %}
                             <label for="endpoint">End point URL</label>
@@ -14,11 +13,8 @@
                             <input name="identity" id="identity" value="{{ identity }}">
                             <label for="secret">Sender shared secrete</label>
                             <input name="secret" id="secret" value="{{ secret }}">
-                            <label for="auxiliary_id">Auxiliary ID</label>
-                            <input name="auxiliary_id" id="auxiliary_id" value="{{ auxiliary_id }}">
-                            <label for="deployment_mode">Deployment Mode</label>
-                            <input name="deployment_mode" id="deployment_mode" value="{{ deployment_mode }}">
                         {% endblock %}
+                        <hr/>
                         <label for="xdebug">XDEBUG</label>
                         <input name="xdebug" id="xdebug" type="checkbox">
                     {% endblock %}
