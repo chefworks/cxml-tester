@@ -5,9 +5,10 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post" action="order">
+  <form method="post">
     <label for="cart_cxml">Cart</label>
-    <textarea name="cart_cxml" id="cart_cxml" readonly>{{ cxml }}</textarea>
-    <input type="submit" name="convert_cart" value="Convert to order">
+    <textarea name="cart_cxml" id="cart_cxml">{{ cxml }}</textarea>
+    <input type="submit" name="convert_cart2order" formaction="order" value="Convert to order request">
+    <input type="submit" name="convert_cart2request" formaction="/" value="Convert to setup request">
   </form>
 {% endblock %}

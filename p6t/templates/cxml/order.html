@@ -4,13 +4,5 @@
   <h1>{% block title %}OrderRequest{% endblock %}</h1>
 {% endblock %}
 
-{% block cxml_form_common_input_vars %}
-  <label for="cart_cxml">Cart</label>
-  <textarea name="cart_cxml" id="cart_cxml">{{ cart_cxml }}</textarea>
-  <input type="submit" name="convert_cart" tabindex="1" value="Convert to order">
-  <hr/>
-  {{ super() }}
-{% endblock %}
-
 
 

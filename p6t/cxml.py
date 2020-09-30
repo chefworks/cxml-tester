@@ -11,7 +11,13 @@ from .settings import settings
 
 
 class TemplateVarSpec:
-    def __init__(self, name: str, sync_session=True, from_settings=True, subst_xpath=''):
+    def __init__(
+            self,
+            name: str,
+            sync_session=True,
+            from_settings=True,
+            subst_xpath=''
+    ):
         self.name = name
         self.sync_session = sync_session
         self.subst_xpath = subst_xpath
@@ -55,12 +61,12 @@ class CxmlBase:
         )
         self.xdebug = TemplateVarSpec('xdebug')
         self.cxml_status_code = TemplateVarSpec(
-            'cxml_status_code', 
+            'cxml_status_code',
             sync_session=False,
             from_settings=False
         )
         self.cxml_response = TemplateVarSpec(
-            'cxml_response', 
+            'cxml_response',
             sync_session=False,
             from_settings=False
         )
@@ -69,8 +75,15 @@ class CxmlBase:
             subst_xpath=cxml.XPATH_AUXILIARY_ID
         )
         self.deployment_mode = TemplateVarSpec(
-            'deployment_mode', 
+            'deployment_mode',
             subst_xpath=cxml.XPATH_DEPLOYMENT_MODE
+        )
+
+        # convert cart submit button in order.html was pressed
+        self.cart_cxml = TemplateVarSpec(
+            'cart_cxml',
+            sync_session=False,
+            from_settings=False
         )
 
         self.template_vars: VariableSpecMap = {}
@@ -102,27 +115,44 @@ class CxmlBase:
             self.cxml_response,
             self.auxiliary_id,
             self.deployment_mode,
+            self.cart_cxml
         ]
 
         tmp_list.extend(template_vars)
 
         for spec in tmp_list:
             self.template_vars[spec.name] = spec
-            
+
             # search:
             # 1. form
             # 2. prefixed session var
             # 3. non-prefixed session var
             # 4. settings
-            spec.val = (
-                request.form.get(spec.name) or
-                session.get(spec.session_var_prefix + spec.name) or
-                session.get(spec.name)
-            )
-            if not spec.val and spec.from_settings:
-                spec.val = settings[spec.name.upper()]
+            val = request.form.get(spec.name)
+            if not val and spec.sync_session:
+                val = (
+                        session.get(spec.session_var_prefix + spec.name) or
+                        session.get(spec.name)
+                )
+
+                if not val and spec.from_settings:
+                    val = settings[spec.name.upper()]
+                pass
+
+            spec.val = val
             pass
         pass
+
+    @staticmethod
+    def load_sample_cxml(filename: str):
+        cxml_path = os.path.join(
+            os.path.dirname(__file__),
+            'static',
+            'cxml',
+            filename
+        )
+
+        return open(cxml_path).read()
 
     def preprocess_cxml(self, xml: str) -> str:
         subst_vars = self.make_xpath_subst_map()
@@ -169,20 +199,26 @@ class CxmlBase:
             pass
         return cxml_text
 
-    def cart2order(self, cart_cxml: str) -> str:
+    def convert_cart(self, xsl: str):
         xslt_params = {}
         for i in self.template_vars:
             spec = self.template_vars[i]
             xslt_params[i] = spec.val or ''
             pass
 
-        res = xslt(
-            cart_cxml,
-            os.path.join(os.path.dirname(__file__), 'xsl', 'cart2order.xsl'),
-            **xslt_params
-        )
+        try:
+            res = xslt(
+                self.cart_cxml.val,
+                os.path.join(os.path.dirname(__file__), 'xsl', xsl),
+                **xslt_params
+            )
 
-        return self.preprocess_cxml(res)
+            self.cxml.val = self.preprocess_cxml(res)
+
+        except Exception as e:
+            flash(e)
+            self.cxml_status_code.val = '500'
+        pass
 
     def post_cxml(self) -> etree.ElementBase:
         self.cxml.val = self.preprocess_cxml(self.cxml.val)
@@ -259,45 +295,24 @@ class CxmlBase:
 class CxmlOrderRequest(CxmlBase):
     def __init__(self):
         super().__init__()
-        # form was submitted from cart.html
-        self.convert_cart = TemplateVarSpec(
-            'convert_cart', 
-            sync_session=False,
-            from_settings=False
-        )
-        self.cart_cxml = TemplateVarSpec(
-            'cart_cxml', 
-            from_settings=False
-        )
-        # convert cart submit button in order.html was pressed
-        self.new_cart = TemplateVarSpec(
-            'new_cart', 
-            sync_session=False,
-            from_settings=False
-        )
 
         self.cxml.session_var_prefix = 'order_'
         self.endpoint.session_var_prefix = 'order_'
 
-        self.init_vars(
-            self.convert_cart,
-            self.cart_cxml,
-            self.new_cart
-        )
+        self.init_vars()
+
+        if not self.cxml.val:
+            self.cxml.val = self.load_sample_cxml('order.xml')
+            pass
 
         pass
 
     def execute_impl(self) -> str:
         if request.method == 'POST':
 
-            if self.convert_cart.val:
+            if request.form.get('convert_cart2order'):
                 if self.cart_cxml.val:
-                    try:
-                        self.cxml.val = self.cart2order(self.cart_cxml.val)
-                    except Exception as e:
-                        flash(e)
-                        self.cxml_status_code.val = '500'
-                        pass
+                    self.convert_cart('cart2order.xsl')
                     pass
             else:
                 self.post_cxml()
@@ -312,11 +327,11 @@ class CxmlSetupRequest(CxmlBase):
     def __init__(self):
         super().__init__()
         self.browser_post_url = TemplateVarSpec(
-            'browser_post_url', 
+            'browser_post_url',
             subst_xpath=cxml.XPATH_POST_URL
         )
         self.start_url = TemplateVarSpec(
-            'start_url', 
+            'start_url',
             sync_session=False,
             from_settings=False
         )
@@ -334,31 +349,27 @@ class CxmlSetupRequest(CxmlBase):
             pass
 
         if not self.cxml.val:
-            self.cxml.val = self.load_sample_cxml()
+            self.cxml.val = self.load_sample_cxml('create.xml')
             pass
         pass
 
-    @staticmethod
-    def load_sample_cxml():
-        cxml_path = os.path.join(
-            os.path.dirname(__file__),
-            'static',
-            'cxml',
-            'create.xml'
-        )
-
-        return open(cxml_path).read()
-
     def execute_impl(self) -> str:
         if request.method == 'POST':
-            xml = self.post_cxml()
+            if request.form.get('convert_cart2request'):
+                if self.cart_cxml.val:
+                    self.convert_cart('cart2setup.xsl')
+                    pass
+            else:
+                xml = self.post_cxml()
 
-            if xml is not None:
-                self.start_url.val = cxml.cxml_extract(
-                    xml, cxml.XPATH_START_URL
-                )
+                if xml is not None:
+                    self.start_url.val = cxml.cxml_extract(
+                        xml, cxml.XPATH_START_URL
+                    )
+                    pass
                 pass
             pass
+
         return self.render_template('cxml/request.html')
     pass
 
@@ -370,9 +381,14 @@ def cxml_request():
     return controller.execute()
 
 
-@bp.route("/cart", methods=["POST"])
+@bp.route("/cart", methods=["POST", "GET"])
 def cxml_cart():
-    cxml_text = CxmlBase.get_cxml_base64()
+
+    if request.form.get('cxml-base64'):
+        cxml_text = CxmlBase.get_cxml_base64()
+    else:
+        cxml_text = request.form.get('cart_cxml') or ''
+        pass
 
     return render_template(
         'cxml/cart.html',
