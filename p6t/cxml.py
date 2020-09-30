@@ -330,6 +330,10 @@ class CxmlSetupRequest(CxmlBase):
             'browser_post_url',
             subst_xpath=cxml.XPATH_POST_URL
         )
+        self.operation = TemplateVarSpec(
+            'operation',
+            subst_xpath=cxml.XPATH_OPERATION
+        )
         self.start_url = TemplateVarSpec(
             'start_url',
             sync_session=False,
@@ -341,7 +345,8 @@ class CxmlSetupRequest(CxmlBase):
 
         self.init_vars(
             self.browser_post_url,
-            self.start_url
+            self.start_url,
+            self.operation
         )
 
         if not self.browser_post_url.val:

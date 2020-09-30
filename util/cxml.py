@@ -13,6 +13,7 @@ XPATH_START_URL = '//Response/PunchOutSetupResponse/StartPage/URL'
 XPATH_AUXILIARY_ID = '//SupplierPartAuxiliaryID'
 XPATH_STATUS_CODE = '/cXML/Response/Status/@code'
 XPATH_DEPLOYMENT_MODE = '/cXML/Request/@deploymentMode'
+XPATH_OPERATION = '/cXML/Request/PunchOutSetupRequest/@operation'
 
 
 def get_proxy():
