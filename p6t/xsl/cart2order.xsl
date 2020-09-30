@@ -27,7 +27,7 @@
     <Request deploymentMode="{$deployment_mode}">
       <OrderRequest>
         <xsl:apply-templates select="PunchOutOrderMessage/PunchOutOrderMessageHeader"/>
-        <xsl:apply-imports select="PunchOutOrderMessage/ItemIn"/>
+        <xsl:apply-templates select="PunchOutOrderMessage/ItemIn"/>
       </OrderRequest>
     </Request>
   </xsl:template>
