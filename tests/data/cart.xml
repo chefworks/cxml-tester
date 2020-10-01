@@ -1,0 +1,66 @@
+<cXML payloadID="punchout@www.chefworks.com" xml:lang="en-US" timestamp="2020-09-25 15:30:43" version="1.2.032">
+  <Header>
+    <From>
+      <Credential domain="baba.com">
+        <Identity>hilton1</Identity>
+      </Credential>
+    </From>
+    <To>
+      <Credential domain="baba.com">
+        <Identity>805269693</Identity>
+      </Credential>
+    </To>
+    <Sender>
+      <Credential domain="baba.com">
+        <Identity>hilton1</Identity>
+      </Credential>
+      <UserAgent>Chef Works</UserAgent>
+    </Sender>
+  </Header>
+  <Message>
+    <PunchOutOrderMessage>
+      <BuyerCookie>4-20-2016-16-34-19-286-CYCHICOGM</BuyerCookie>
+      <PunchOutOrderMessageHeader operationAllowed="edit">
+        <Total>
+          <Money currency="USD">30.94</Money>
+        </Total>
+        <ShipTo>
+          <Address>
+            <Name xml:lang="en">M2 Po</Name>
+            <PostalAddress>
+              <DeliverTo>M2 Po</DeliverTo>
+              <Street>12325 Kerran Street</Street>
+              <City>Poway</City>
+              <State>CA</State>
+              <PostalCode>92064</PostalCode>
+              <Country isoCountryCode="US">US</Country>
+            </PostalAddress>
+          </Address>
+        </ShipTo>
+        <Shipping>
+          <Money currency="USD">9.95</Money>
+          <Description xml:lang="en">UPS Ground - 0NGRND</Description>
+        </Shipping>
+        <Tax>
+          <Money currency="USD">0</Money>
+          <Description xml:lang="en">MONEY</Description>
+        </Tax>
+      </PunchOutOrderMessageHeader>
+      <ItemIn quantity="1">
+        <ItemID>
+          <SupplierPartID>WCCWWHTM</SupplierPartID>
+          <SupplierPartAuxiliaryID>710130064</SupplierPartAuxiliaryID>
+        </ItemID>
+        <ItemDetail>
+          <UnitPrice>
+            <Money currency="USD">20.99</Money>
+          </UnitPrice>
+          <Description xml:lang="en">Le Mans Chef Coat</Description>
+          <UnitOfMeasure>EA</UnitOfMeasure>
+          <Classification domain="UNSPSC">53102700</Classification>
+          <URL>dne</URL>
+        </ItemDetail>
+      </ItemIn>
+    </PunchOutOrderMessage>
+  </Message>
+</cXML>

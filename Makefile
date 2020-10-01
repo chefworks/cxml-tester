@@ -8,24 +8,28 @@ ifneq ($(AUTO_FIX_IMPORTS), 1)
   autofix = --check-only
 endif
 
-test: static
+test: static unit
 
-initenv:
+init:
 	pip3 install --upgrade pip
 	pip install pipenv
+	pipenv --python 3.8
 	pipenv sync --dev
+
+unit:
+	pipenv run python -m pytest
 
 static: imports flake8 pylint
 
 
 flake8:
-	pipenv run flake8 p6t util
+	pipenv run flake8 p6t util tests
 
 pylint:
-	pipenv run pylint p6t util -E
+	pipenv run pylint p6t util tests -E
 
 imports:
-	pipenv run isort -rc $(autofix) p6t util
+	pipenv run isort -rc $(autofix) p6t util tests
 
 test-clean:
 	rm -f tests/*.sqlite

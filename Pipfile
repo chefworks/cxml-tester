@@ -11,16 +11,17 @@ coverage = "*"
 pytest = "*"
 more-itertools = "*"
 importlib-metadata = "*"
+pytest-httpserver = "*"
+Flask-Testing = "*"
 
 [packages]
 lxml = "*"
 python-dotenv = "*"
 watchdog = "*"
-Flask-RESTful = "*"
 requests = "*"
-pyyaml = "*"
 flask = "*"
 gunicorn = "*"
+pyyaml = "*"
 
 [requires]
 python_version = "3.8"

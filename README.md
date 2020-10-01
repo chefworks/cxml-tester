@@ -1,5 +1,5 @@
 # cXML Tester
-[![Build Status](https://img.shields.io/github/workflow/status/chefworks/cxml-tester/ci-tests)](https://github.com/chefworks/cxml-tester)
+![Code](https://github.com/chefworks/cxml-tester/workflows/static/badge.svg) ![Unit](https://github.com/chefworks/cxml-tester/workflows/unit/badge.svg)
 
 cXML Tester is a [cXML]((http://xml.cxml.org/current/cXMLReferenceGuide.pdf)) data posting tool for 
 testing [Procurement PunchOut](https://en.wikipedia.org/wiki/CXML) vendor implementations.
