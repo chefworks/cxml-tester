@@ -1,5 +1,5 @@
 # cXML Tester
-![Code](https://github.com/chefworks/cxml-tester/workflows/static/badge.svg) ![Unit](https://github.com/chefworks/cxml-tester/workflows/unit/badge.svg)
+![Code Lint](https://github.com/chefworks/cxml-tester/workflows/code-lint/badge.svg) ![Unit Tests](https://github.com/chefworks/cxml-tester/workflows/unit-tests/badge.svg)
 
 cXML Tester is a [cXML]((http://xml.cxml.org/current/cXMLReferenceGuide.pdf)) data posting tool for 
 testing [Procurement PunchOut](https://en.wikipedia.org/wiki/CXML) vendor implementations.
