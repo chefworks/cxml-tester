@@ -9,7 +9,11 @@
 <label for="browser_post_url">Browser Post Form</label>
 <input name="browser_post_url" id="browser_post_url" value="{{ browser_post_url }}">
 <label for="operation">Operation</label>
-<input name="operation" id="operation" value="{{ operation }}">
+<select name="operation" id="operation">
+  {% for a in ['create', 'inspect', 'edit'] %}
+    <option label="{{ a }}" value="{{ a }}" {% if a == operation.val %}selected{% endif %}></option>
+  {% endfor %}
+</select>
 {% endblock %}
 
 {% block cxml_content_bottom_extra %}
