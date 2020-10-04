@@ -392,8 +392,12 @@ def cxml_cart():
     if request.form.get('cxml-base64'):
         cxml_text = CxmlBase.get_cxml_base64()
     else:
-        cxml_text = request.form.get('cart_cxml') or ''
+        cxml_text = (
+            request.form.get('cart_cxml') or session.get('cxml_cart') or ''
+        )
         pass
+
+    session['cxml_cart'] = cxml_text
 
     return render_template(
         'cxml/cart.html',
@@ -411,6 +415,10 @@ def cxml_order():
 def cxml_reset():
     for controller in [CxmlSetupRequest(), CxmlOrderRequest()]:
         controller.reset()
+        pass
+
+    if session.get('cxml_cart'):
+        del session['cxml_cart']
         pass
 
     return redirect(url_for('cxml.cxml_request'))

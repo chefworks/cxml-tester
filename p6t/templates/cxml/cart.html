@@ -11,4 +11,9 @@
     <input type="submit" name="convert_cart2order" formaction="order" value="Convert to order request">
     <input type="submit" name="convert_cart2request" formaction="/" value="Convert to setup request">
   </form>
+<script>
+  if (parent !== window) { // redirect inner-iframe posted /cart back to parent's '/cart'
+    parent.location.replace('/cart');
+  }
+</script>
 {% endblock %}
