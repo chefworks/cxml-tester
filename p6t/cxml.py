@@ -123,25 +123,43 @@ class CxmlBase:
         for spec in tmp_list:
             self.template_vars[spec.name] = spec
 
-            # search:
-            # 1. form
-            # 2. prefixed session var
-            # 3. non-prefixed session var
-            # 4. settings
-            val = request.form.get(spec.name)
-            if not val and spec.sync_session:
-                val = (
-                        session.get(spec.session_var_prefix + spec.name) or
-                        session.get(spec.name)
-                )
-
-                if not val and spec.from_settings:
-                    val = settings[spec.name.upper()]
-                pass
+            val = self.resolve_var(spec)
 
             spec.val = val
             pass
         pass
+
+    @staticmethod
+    def resolve_var(spec):
+        # search:
+        # 1. form
+        # 2. prefixed session var
+        # 3. non-prefixed session var
+        # 4. settings
+
+        if spec.from_settings:
+            settings_val = settings[  # settings var must exist
+                spec.name.upper()
+            ]
+        else:
+            settings_val = settings.get(spec.name.upper(), '')
+            pass
+
+        val = request.form.get(
+            spec.name,
+            session.get(
+                spec.session_var_prefix + spec.name,
+                session.get(
+                    spec.name,
+                    settings_val
+                )
+            )
+        )
+        form_val = request.form.get(spec.name, None)
+        if form_val is not None and spec.sync_session:
+            session[spec.name] = form_val
+            pass
+        return val
 
     @staticmethod
     def load_sample_cxml(filename: str):

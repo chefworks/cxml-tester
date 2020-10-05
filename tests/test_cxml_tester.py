@@ -66,7 +66,9 @@ def test_var_resolution(app, get_template_vars_setup):
 
         with app.test_request_context('/', method=method, data=data):
             for var in template_vars:
-                flask.session[var.name] = 'session-' + var.name
+                if var.sync_session:
+                    flask.session[var.name] = 'session-' + var.name
+                    pass
                 pass
 
             cxml_setup = CxmlSetupRequest()
@@ -75,7 +77,7 @@ def test_var_resolution(app, get_template_vars_setup):
                     if var.sync_session:
                         assert var.val == 'session-' + var.name
                     else:
-                        assert var.val is None
+                        assert var.val == ''
                         pass
                 else:
                     assert var.val == 'form-' + var.name
