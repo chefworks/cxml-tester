@@ -15,7 +15,7 @@ def test_cart2request(app, cart_cxml, xml_builder):
             )
     ):
         cxml_setup = CxmlSetupRequest()
-        assert cxml_setup.operation.val == 'create'
+        assert cxml_setup.operation.val == ''  # no initial operation mode
 
         def execute(operation_mode):
             cxml_setup.operation.val = operation_mode

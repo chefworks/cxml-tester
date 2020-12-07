@@ -29,7 +29,7 @@ pylint:
 	pipenv run pylint p6t util tests -E
 
 imports:
-	pipenv run isort -rc $(autofix) p6t util tests
+	pipenv run isort $(autofix) p6t util tests
 
 test-clean:
 	rm -f tests/*.sqlite
