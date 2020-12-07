@@ -5,7 +5,7 @@ from os import path
 import yaml
 
 with open('%s/../logging.yaml' % path.dirname(__file__)) as f:
-    D = yaml.load(f)
+    D = yaml.load(f, Loader=yaml.FullLoader)
     D.setdefault('version', 1)
     logging.config.dictConfig(D)
 

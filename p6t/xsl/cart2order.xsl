@@ -6,9 +6,6 @@
   <xsl:import href="common-header.xsl"/>
   <xsl:import href="item-out.xsl"/>
 
-  <xsl:param name="deployment_mode">test</xsl:param>
-  <xsl:param name="python"/>
-
   <xsl:output method="xml" indent="yes" encoding="utf-8"/>
 
   <xsl:strip-space elements="*"/>
@@ -24,7 +21,7 @@
   </xsl:template>
   
   <xsl:template match="Message">
-    <Request deploymentMode="{$deployment_mode}">
+    <Request deploymentMode="{$deployment_mode_var}">
       <OrderRequest>
         <xsl:apply-templates select="PunchOutOrderMessage/PunchOutOrderMessageHeader"/>
         <xsl:apply-templates select="PunchOutOrderMessage/ItemIn"/>

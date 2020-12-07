@@ -5,6 +5,24 @@
   <xsl:param name="identity"/>
   <xsl:param name="secret"/>
   <xsl:param name="python"/>
+  <xsl:param name="deployment_mode"/>
+  <xsl:param name="operation"/>
+
+  <xsl:variable name="operation_var">
+    <xsl:choose>
+      <xsl:when test="$operation"><xsl:value-of select="$operation"/></xsl:when>
+      <xsl:when test="//PunchOutSetupRequest/@operation"><xsl:value-of select="//PunchOutSetupRequest/@operation"/></xsl:when>
+      <xsl:otherwise>create</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
+  <xsl:variable name="deployment_mode_var">
+    <xsl:choose>
+      <xsl:when test="$deployment_mode"><xsl:value-of select="$deployment_mode"/></xsl:when>
+      <xsl:when test="//Request/@deploymentMode"><xsl:value-of select="//Request/@deploymentMode"/></xsl:when>
+      <xsl:otherwise>test</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
 
   <xsl:template match="From/Credential/Identity/text()">
     <xsl:choose>

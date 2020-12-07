@@ -6,10 +6,7 @@
   <xsl:import href="common-header.xsl"/>
   <xsl:import href="item-out.xsl"/>
 
-  <xsl:param name="deployment_mode">test</xsl:param>
-  <xsl:param name="operation">create</xsl:param>
   <xsl:param name="buyer_cookie">6e074e0c-02e6-11eb-988e-1321f6d6b14f</xsl:param>
-  <xsl:param name="python"/>
 
   <xsl:output method="xml" indent="yes" encoding="utf-8"/>
 
@@ -20,8 +17,8 @@
   </xsl:template>
 
   <xsl:template match="Message">
-    <Request deploymentMode="{$deployment_mode}">
-      <PunchOutSetupRequest operation="{$operation}">
+    <Request deploymentMode="{$deployment_mode_var}">
+      <PunchOutSetupRequest operation="{$operation_var}">
         <xsl:apply-templates select="PunchOutOrderMessage/BuyerCookie"/>
         <BrowserFormPost>
           <URL>https://example.com/punchout-cart-return/bababuba</URL>
