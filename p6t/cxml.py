@@ -5,9 +5,11 @@ from flask import (Blueprint, flash, redirect, render_template, request,
                    session, url_for)
 from lxml import etree
 
-from util import cxml, xslt
+from util import cxml, get_logger, xslt
 
 from .settings import settings
+
+logger = get_logger(__name__)
 
 
 class TemplateVarSpec:
@@ -440,3 +442,16 @@ def cxml_reset():
         pass
 
     return redirect(url_for('cxml.cxml_request'))
+
+
+@bp.errorhandler(Exception)
+def handle_exception(e):
+    logger.critical(
+        'exception handler: %s' % str(e),
+        exc_info=e,
+        stack_info=True
+    )
+    return {
+               'error': str(e),
+               'type': e.__class__.__name__
+           }, 400

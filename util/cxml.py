@@ -102,10 +102,18 @@ def parseargs():
     return xml, args
 
 
+class CxmlParseError(Exception):
+    pass
+
+
 def decode_cxml(cxml_base64: str) -> etree.ElementBase:
     cxml = base64.decodebytes(cxml_base64.encode())
-    parser = etree.XMLParser()
-    return etree.fromstring(cxml, parser)
+    try:
+        parser = etree.XMLParser()
+        return etree.fromstring(cxml, parser)
+    except etree.XMLSyntaxError as e:
+        raise CxmlParseError('%s: "%s"' % (str(e), cxml.decode()))
+        pass
 
 
 def load_cxml(cxml: bytes or str, subst_vars: dict = {}) -> etree.ElementBase:
