@@ -1,4 +1,7 @@
 import os
+
+from enum import Enum, auto
+
 from typing import Dict, List
 
 from flask import (Blueprint, flash, redirect, render_template, request,
@@ -12,13 +15,22 @@ from .settings import settings
 logger = get_logger(__name__)
 
 
+class VarResolvedSource(Enum):
+    NONE = auto()
+    SETTINGS = auto()
+    SESSION = auto()
+    FORM = auto()
+    pass
+
+
 class TemplateVarSpec:
     def __init__(
             self,
             name: str,
             sync_session=True,
             from_settings=True,
-            subst_xpath=''
+            subst_xpath='',
+            help=''
     ):
         self.name = name
         self.sync_session = sync_session
@@ -26,6 +38,8 @@ class TemplateVarSpec:
         self.from_settings = from_settings
         self.session_var_prefix = ''
         self.val = None
+        self.resolved_from = VarResolvedSource.NONE
+        self.help = help
         pass
 
     def __str__(self):
@@ -35,6 +49,40 @@ class TemplateVarSpec:
             return str(self.val)
 
         return ''
+
+    def resolve(self):
+        # search:
+        # 1. form
+        # 2. prefixed session var
+        # 3. non-prefixed session var
+        # 4. settings
+
+        def get_val(src: dict, resolved_from: VarResolvedSource):
+            no_exist = object()
+            name = self.name
+            if resolved_from == VarResolvedSource.SETTINGS:
+                name = name.upper()
+                pass
+
+            val = src.get(name, no_exist)
+            if val != no_exist:
+                self.val = val
+                self.resolved_from = resolved_from
+                pass
+
+            return val != no_exist
+
+        for var_src, src_from in [
+            (request.form, VarResolvedSource.FORM),
+            (session, VarResolvedSource.SESSION),
+            (settings, VarResolvedSource.SETTINGS)
+        ]:
+            if get_val(var_src, src_from):
+                return
+            pass
+
+        if self.from_settings: # settings var must exist
+            raise KeyError('%s is missing in .env or environment' % self.name.upper())
     pass
 
 
@@ -57,10 +105,6 @@ class CxmlBase:
             subst_xpath=cxml.XPATH_SHARED_SECRET
         )
         self.endpoint = TemplateVarSpec('endpoint')
-        self.browser_post_url = TemplateVarSpec(
-            'browser_post_url',
-            subst_xpath=cxml.XPATH_POST_URL
-        )
         self.xdebug = TemplateVarSpec('xdebug')
         self.cxml_status_code = TemplateVarSpec(
             'cxml_status_code',
@@ -111,7 +155,6 @@ class CxmlBase:
             self.identity,
             self.secret,
             self.endpoint,
-            self.browser_post_url,
             self.xdebug,
             self.cxml_status_code,
             self.cxml_response,
@@ -124,44 +167,9 @@ class CxmlBase:
 
         for spec in tmp_list:
             self.template_vars[spec.name] = spec
-
-            val = self.resolve_var(spec)
-
-            spec.val = val
+            spec.resolve()
             pass
         pass
-
-    @staticmethod
-    def resolve_var(spec):
-        # search:
-        # 1. form
-        # 2. prefixed session var
-        # 3. non-prefixed session var
-        # 4. settings
-
-        if spec.from_settings:
-            settings_val = settings[  # settings var must exist
-                spec.name.upper()
-            ]
-        else:
-            settings_val = settings.get(spec.name.upper(), '')
-            pass
-
-        val = request.form.get(
-            spec.name,
-            session.get(
-                spec.session_var_prefix + spec.name,
-                session.get(
-                    spec.name,
-                    settings_val
-                )
-            )
-        )
-        form_val = request.form.get(spec.name, None)
-        if form_val is not None and spec.sync_session:
-            session[spec.name] = form_val
-            pass
-        return val
 
     @staticmethod
     def load_sample_cxml(filename: str):
@@ -346,6 +354,10 @@ class CxmlOrderRequest(CxmlBase):
 class CxmlSetupRequest(CxmlBase):
     def __init__(self):
         super().__init__()
+        self.buyer_cookie = TemplateVarSpec(
+            'buyer_cookie',
+            subst_xpath=cxml.XPATH_BUYER_COOKIE
+        )
         self.browser_post_url = TemplateVarSpec(
             'browser_post_url',
             subst_xpath=cxml.XPATH_POST_URL
@@ -364,13 +376,18 @@ class CxmlSetupRequest(CxmlBase):
         self.endpoint.session_var_prefix = 'request_'
 
         self.init_vars(
+            self.buyer_cookie,
             self.browser_post_url,
             self.start_url,
             self.operation
         )
 
-        if not self.browser_post_url.val:
-            self.browser_post_url.val = request.url + 'cart'
+        if not self.browser_post_url.val and self.browser_post_url.resolved_from == VarResolvedSource.SETTINGS:
+            self.browser_post_url.val = request.url + 'cart'  # set default if unmodified is empty
+            pass
+
+        if (self.browser_post_url.val or '').lower() == 'none':  # enable bypassing above by inputing 'none' into input
+            self.browser_post_url.val = ''
             pass
 
         if not self.cxml.val:

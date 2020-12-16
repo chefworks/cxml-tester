@@ -7,15 +7,15 @@
                 <form method="post" {% block form_action %}{% endblock %}>
                     {% block cxml_form_common_input_vars %}
                         {% block cxml_subst_vars %}
-                            <label for="endpoint">End point URL</label>
+                            <label for="endpoint"><span title="This is where the cXML form will be posted to">End point URL</span></label>
                             <input name="endpoint" id="endpoint" value="{{ endpoint }}" required>
-                            <label for="identity">From identity</label>
+                            <label for="identity"><span title="The punchout_identity value - overrides cXML">From identity</span></label>
                             <input name="identity" id="identity" value="{{ identity }}">
-                            <label for="secret">Sender shared secrete</label>
+                            <label for="secret"><span title="The sender_shared_secret value - overrides cXML">Sender shared secrete</span></label>
                             <input name="secret" id="secret" value="{{ secret }}">
-                            <label for="auxiliary_id">Auxiliary ID</label>
+                            <label for="auxiliary_id"><span title="The auxiliary_id value (use in edit/inspect mode or order requests) - overrides cXML">Auxiliary ID</span></label>
                             <input name="auxiliary_id" id="auxiliary_id" value="{{ auxiliary_id }}">
-                            <label for="deployment_mode">Deployment Mode</label>
+                            <label for="deployment_mode"><span title="The deployment_mode (defaults to production) - overrides cXML">Deployment Mode</span></label>
                             <select name="deployment_mode" id="deployment_mode">
                                 {% for a in ['', 'test', 'production'] %}
                                 <option label="{{ a }}" value="{{ a }}" {% if a == deployment_mode.val %}selected{% endif %}></option>
@@ -23,11 +23,11 @@
                             </select>
                         {% endblock %}
                         <hr/>
-                        <label for="xdebug">XDEBUG</label>
+                        <label for="xdebug"><span title="Add XDEBUG_SESSION cookie to setup/order request (for debugging the PHP side code)">XDEBUG</span></label>
                         <input name="xdebug" id="xdebug" type="checkbox" {% if xdebug.val %}checked{% endif %}>
                     {% endblock %}
                     {% block cxml_form_input_vars %}
-                        <label for="cxml">cXML</label>
+                        <label for="cxml"><span title="The cXML to post - either setup/order request or cart cXML data">cXML</span></label>
                         <textarea name="cxml" id="cxml">{{ cxml }}</textarea>
                     {% endblock %}
                     {% block cxml_form_submit %}
@@ -35,7 +35,7 @@
                     {% endblock %}
                     {% block cxml_form_result %}
                         <hr/>
-                        <label for="response">Response</label>
+                        <label for="response"><span title="This is what the server responded">Response</span></label>
                         <textarea name="response" id="response" readonly>{{ cxml_response }}</textarea>
                     {% endblock %}
                     {% block cxml_form_bottom_extra %}{% endblock %}

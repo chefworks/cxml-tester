@@ -115,6 +115,16 @@ nav ul li a, nav ul li span, header .action {
   margin-bottom: 0.5em;
 }
 
+.content label > span {
+  border-bottom-color: transparent;
+  border-bottom-style: dotted;
+  border-bottom-width: 1px;
+}
+
+.content label > span[title] {
+  border-bottom-color: lightgray;
+}
+
 .content input, .content textarea {
   margin-bottom: 1em;
 }

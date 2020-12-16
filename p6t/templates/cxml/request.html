@@ -6,9 +6,11 @@
 
 {% block cxml_subst_vars %}
 {{ super() }}
-<label for="browser_post_url">Browser Post Form</label>
+<label for="browser_post_url"><span title="The buyer_cookie - overrides cXML">Buyer Cookie</span></label>
+<input name="buyer_cookie" id="buyer_cookie" value="{{ buyer_cookie }}">
+<label for="browser_post_url"><span title="The browser_post_url (defaults to /cart) - overrides cXML. Type 'none' to unset">Browser Post Form</span></label>
 <input name="browser_post_url" id="browser_post_url" value="{{ browser_post_url }}">
-<label for="operation">Operation</label>
+<label for="operation"><span title="The requested operation (defaults to 'create') - overrides cXML">Operation</span></label>
 <select name="operation" id="operation">
   {% for a in ['', 'create', 'inspect', 'edit'] %}
     <option label="{{ a }}" value="{{ a }}" {% if a == operation.val %}selected{% endif %}></option>

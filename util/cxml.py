@@ -8,6 +8,7 @@ from lxml import etree
 
 XPATH_PUNCHOUT_IDENTITY = '//Header/From/Credential/Identity'
 XPATH_POST_URL = '/cXML/Request/PunchOutSetupRequest/BrowserFormPost/URL'
+XPATH_BUYER_COOKIE = '//BuyerCookie'
 XPATH_SHARED_SECRET = '//Header/Sender/Credential/SharedSecret'
 XPATH_START_URL = '//Response/PunchOutSetupResponse/StartPage/URL'
 XPATH_AUXILIARY_ID = '//SupplierPartAuxiliaryID'
