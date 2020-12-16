@@ -1,7 +1,5 @@
 import os
-
 from enum import Enum, auto
-
 from typing import Dict, List
 
 from flask import (Blueprint, flash, redirect, render_template, request,
@@ -81,8 +79,10 @@ class TemplateVarSpec:
                 return
             pass
 
-        if self.from_settings: # settings var must exist
-            raise KeyError('%s is missing in .env or environment' % self.name.upper())
+        if self.from_settings:  # settings var must exist
+            raise KeyError(
+                '%s is missing in .env or environment' % self.name.upper()
+            )
     pass
 
 
@@ -382,11 +382,13 @@ class CxmlSetupRequest(CxmlBase):
             self.operation
         )
 
-        if not self.browser_post_url.val and self.browser_post_url.resolved_from == VarResolvedSource.SETTINGS:
-            self.browser_post_url.val = request.url + 'cart'  # set default if unmodified is empty
+        if not self.browser_post_url.val and self.browser_post_url.resolved_from == VarResolvedSource.SETTINGS:  # noqa: E501
+            # set default if unmodified is empty
+            self.browser_post_url.val = request.url + 'cart'
             pass
 
-        if (self.browser_post_url.val or '').lower() == 'none':  # enable bypassing above by inputing 'none' into input
+        # enable bypassing above by inputing 'none' into input
+        if (self.browser_post_url.val or '').lower() == 'none':
             self.browser_post_url.val = ''
             pass
 

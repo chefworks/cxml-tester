@@ -77,7 +77,7 @@ def test_var_resolution(app, get_template_vars_setup):
                     if var.sync_session:
                         assert var.val == 'session-' + var.name
                     else:
-                        assert var.val == ''
+                        assert var.val is None
                         pass
                 else:
                     assert var.val == 'form-' + var.name
