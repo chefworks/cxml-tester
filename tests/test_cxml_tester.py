@@ -54,20 +54,22 @@ def test_cxml_xpath_processing(app, xml_builder):
 def test_var_resolution(app, get_template_vars_setup):
 
     template_vars = get_template_vars_setup
+
+    def mkdata():
+        d = {}
+        for spec in template_vars:
+            d[spec.name] = 'form-' + spec.name
+            pass
+        return d
+
     for method in ['GET', 'POST']:
-        def mkdata():
-            data = {}
-            for spec in template_vars:
-                data[spec.name] = 'form-' + spec.name
-                pass
-            return data
 
         data = mkdata() if method == 'POST' else None
 
         with app.test_request_context('/', method=method, data=data):
             for var in template_vars:
                 if var.sync_session:
-                    flask.session[var.name] = 'session-' + var.name
+                    flask.session[var.session_var_prefix + var.name] = 'session-' + var.name  # noqa: E501
                     pass
                 pass
 
@@ -86,7 +88,8 @@ def test_var_resolution(app, get_template_vars_setup):
 
 
 def test_setup_request(
-        app, httpserver: HTTPServer,
+        app,
+        httpserver: HTTPServer,
         xml_builder,
         setup_response_handler,
         setup_response_cxml,
@@ -100,7 +103,7 @@ def test_setup_request(
     )
 
     with app.test_request_context('/'):
-        flask.session['endpoint'] = httpserver.url_for('/m2po/cxml/pr')
+        flask.session['request_endpoint'] = httpserver.url_for('/m2po/cxml/pr')
         cxml_setup = CxmlSetupRequest()
         cxml_setup.post_cxml()
         assert setup_request_data[0] == cxml_setup.cxml.val

@@ -48,6 +48,23 @@ class TemplateVarSpec:
 
         return ''
 
+    def __resolve_var(self, src: dict, resolved_from: VarResolvedSource):
+        no_exist = object()
+        name = self.name
+        if resolved_from == VarResolvedSource.SETTINGS:
+            name = name.upper()
+        elif resolved_from == VarResolvedSource.SESSION:
+            name = self.session_var_prefix + name
+        pass
+
+        val = src.get(name, no_exist)
+        if val != no_exist:
+            self.val = val
+            self.resolved_from = resolved_from
+            pass
+
+        return val != no_exist
+
     def resolve(self):
         # search:
         # 1. form
@@ -55,27 +72,12 @@ class TemplateVarSpec:
         # 3. non-prefixed session var
         # 4. settings
 
-        def get_val(src: dict, resolved_from: VarResolvedSource):
-            no_exist = object()
-            name = self.name
-            if resolved_from == VarResolvedSource.SETTINGS:
-                name = name.upper()
-                pass
-
-            val = src.get(name, no_exist)
-            if val != no_exist:
-                self.val = val
-                self.resolved_from = resolved_from
-                pass
-
-            return val != no_exist
-
         for var_src, src_from in [
             (request.form, VarResolvedSource.FORM),
             (session, VarResolvedSource.SESSION),
             (settings, VarResolvedSource.SETTINGS)
         ]:
-            if get_val(var_src, src_from):
+            if self.__resolve_var(var_src, src_from):
                 return
             pass
 
@@ -382,14 +384,9 @@ class CxmlSetupRequest(CxmlBase):
             self.operation
         )
 
-        if not self.browser_post_url.val and self.browser_post_url.resolved_from == VarResolvedSource.SETTINGS:  # noqa: E501
+        if not self.browser_post_url.val:
             # set default if unmodified is empty
             self.browser_post_url.val = request.url + 'cart'
-            pass
-
-        # enable bypassing above by inputing 'none' into input
-        if (self.browser_post_url.val or '').lower() == 'none':
-            self.browser_post_url.val = ''
             pass
 
         if not self.cxml.val:
