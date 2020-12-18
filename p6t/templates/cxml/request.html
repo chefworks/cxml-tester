@@ -19,7 +19,34 @@
 {% endblock %}
 
 {% block cxml_content_bottom_extra %}
-Start URL: {% if start_url != '' %}<a href="{{ start_url }}" target="_blank">{{ start_url }}</a><br/>
+<script>
+  function copy_start_url_to_clipboard() {
+      var text = document.getElementById('start-url-link').href;
+
+      try {
+          navigator.clipboard.writeText(text).then(function() {
+              document.getElementById('clipboard-copied').innerText = 'Copied';
+          });
+          setTimeout(function () {
+              document.getElementById('copy-start-url').blur();
+              document.getElementById('clipboard-copied').innerText = '';
+          }, 1000);
+      } catch (e) {
+          console.log('Hit a snag when copying to clipboard:', e);
+      }
+  }
+</script>
+Start URL: {% if start_url != '' %}<a id="start-url-link" href="{{ start_url }}" target="_blank">{{ start_url }}</a><button title="copy URL to clipboard" id="copy-start-url" onclick="copy_start_url_to_clipboard()">
+  <div>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 512 512">
+      <g>
+        <g>
+          <path d="m425.5,85.5h-61.9c-1.8-13.9-3.1-24.2-3.1-24.2-1.3-10.2-10-17.9-20.4-17.9h-63.5v-12c0-11.3-9.2-20.4-20.5-20.4-11.3,0-20.5,9.1-20.5,20.4v12h-63.6c-10.4,0-19.1,7.7-20.4,17.9l-3,24.2h-62c-11.3,0-20.5,9.1-20.5,20.4v374.6c0,11.3 9.2,20.4 20.5,20.4h338.9c11.3,0 20.5-9.1 20.5-20.4v-374.6c0.1-11.2-9.1-20.4-20.5-20.4zm-235.4-1.2h131.9l6.7,53.2h-145.3l6.7-53.2zm214.9,375.9h-297.8v-333.8h36.3l-3.6,29c-0.7,5.8 0,22.9 20.4,22.9h191.7c0.1,0 0.1,0 0.2,0 11.4,0 20.5-9.1 20.5-20.4 0-0.7-1.7-14.5-3.9-31.5h36.2v333.8z"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+</button><span id="clipboard-copied"></span><br/>
   <iframe name="provider_site" class="provider-site" src="{{ start_url }}"></iframe>
 {% endif %}
 {% endblock %}

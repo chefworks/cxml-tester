@@ -160,3 +160,25 @@ input[type=submit] {
 .cxml-content.posted[data-status-code^='2'] {
   border: 4px solid green;
 }
+
+button#copy-start-url {
+  margin-left: .5em;
+  margin-right: .2em;
+}
+
+button#copy-start-url > div {
+    display: inline-block;
+    width: 16px;
+}
+
+a#start-url-link[href=""] ~ button#copy-start-url {
+  display: none;
+}
+
+iframe[name="provider_site"] {
+    margin-top: .2em;
+}
+
+span#clipboard-copied {
+  color: gray;
+}
