@@ -1,20 +1,28 @@
 <!doctype html>
-<title>{% block title %}{% endblock %} - cXML Tester</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<nav>
-  <h1><a href="{{ url_for('cxml.cxml_request') }}">Request</a></h1>
-  <h1><a href="{{ url_for('cxml.cxml_cart') }}">Cart</a></h1>
-  <h1><a href="{{ url_for('cxml.cxml_order') }}">Order</a></h1>
-  <h1><a href="{{ url_for('cxml.cxml_reset') }}">Reset</a></h1>
-</nav>
-<section class="content">
-  <header>
-    {% block header %}{% endblock %}
-  </header>
-  {% for message in get_flashed_messages() %}
-    {% if message %}
-      <div class="flash">{{ message }}</div>
-    {% endif %}
-  {% endfor %}
-  {% block content %}{% endblock %}
-</section>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>{% block title %}{% endblock %} - cXML Tester</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <nav>
+      <h1><a href="{{ url_for('cxml.cxml_request') }}">Request</a></h1>
+      <h1><a href="{{ url_for('cxml.cxml_cart') }}">Cart</a></h1>
+      <h1><a href="{{ url_for('cxml.cxml_order') }}">Order</a></h1>
+      <h1><a href="{{ url_for('cxml.cxml_reset') }}">Reset</a></h1>
+    </nav>
+    <section class="content">
+      <header>
+        {% block header %}{% endblock %}
+      </header>
+      {% for message in get_flashed_messages() %}
+        {% if message %}
+          <div class="flash">{{ message }}</div>
+        {% endif %}
+      {% endfor %}
+      {% block content %}{% endblock %}
+    </section>
+  </body>
+</html>
