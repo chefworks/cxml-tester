@@ -11,8 +11,8 @@ class Settings:
             int_vars: [str] = None,
             list_vars: [str] = None
     ):
-        load_dotenv()
         load_dotenv(find_dotenv('.env.local'))
+        load_dotenv()
 
         self.search_prefixes = self.resolve_search_prefixes()
 

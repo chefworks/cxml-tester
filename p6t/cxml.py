@@ -42,7 +42,7 @@ class TemplateVarSpec:
 
     def __str__(self):
         if self.val:
-            if type(self.val) == bytes:
+            if type(self.val) is bytes:
                 return self.val.decode()
             return str(self.val)
 
@@ -218,11 +218,11 @@ class CxmlBase:
         return self.template_vars
 
     @staticmethod
-    def get_cxml_base64():
-        cxml_base64 = request.form['cxml-base64']
-        xml = cxml.decode_cxml(cxml_base64)
+    def get_form_cxml_param(name: str, base64_encoded: bool):
+        cxml_val = request.form[name]
+        xml = cxml.decode_cxml(cxml_val, base64_encoded)
         cxml_decoded = etree.tostring(xml, pretty_print=True)
-        if type(cxml_decoded) == bytes:
+        if type(cxml_decoded) is bytes:
             cxml_text = cxml_decoded.decode()
         else:
             cxml_text = cxml_decoded
@@ -425,19 +425,22 @@ def cxml_request():
 @bp.route("/cart", methods=["POST", "GET"])
 def cxml_cart():
 
-    if request.form.get('cxml-base64'):
-        cxml_text = CxmlBase.get_cxml_base64()
-    else:
-        cxml_text = (
-            request.form.get('cart_cxml') or session.get('cxml_cart') or ''
-        )
+    def get_cxml(name: str, base64_encoding: bool):
+        if request.form.get(name):
+            return CxmlBase.get_form_cxml_param(name, base64_encoding)
+        else:
+            return session.get(name) or ''
         pass
 
-    session['cxml_cart'] = cxml_text
+    cxml_text = get_cxml('cxml-base64', True)
+    cxml_urlencoded = get_cxml('cxml-urlencoded', False)
+    session['cxml-base64'] = cxml_text
+    session['cxml-urlencoded'] = cxml_urlencoded
 
     return render_template(
         'cxml/cart.html',
-        cxml=cxml_text
+        cxml=cxml_text,
+        cxml_urlencoded=cxml_urlencoded
     )
 
 
@@ -453,8 +456,10 @@ def cxml_reset():
         controller.reset()
         pass
 
-    if session.get('cxml_cart'):
-        del session['cxml_cart']
+    for i in ['cxml-base64', 'cxml-urlencoded']:
+        if session.get(i):
+            del session[i]
+            pass
         pass
 
     return redirect(url_for('cxml.cxml_request'))

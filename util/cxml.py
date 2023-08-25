@@ -107,8 +107,14 @@ class CxmlParseError(Exception):
     pass
 
 
-def decode_cxml(cxml_base64: str) -> etree.ElementBase:
-    cxml = base64.decodebytes(cxml_base64.encode())
+def decode_cxml(cxml_data: str, base64_encoded: bool) -> etree.ElementBase:
+    cxml_bytes = cxml_data.encode('UTF-8')
+    if base64_encoded:
+        cxml = base64.decodebytes(cxml_bytes)
+    else:
+        cxml = cxml_bytes
+        pass
+
     try:
         parser = etree.XMLParser()
         return etree.fromstring(cxml, parser)
@@ -120,7 +126,7 @@ def decode_cxml(cxml_base64: str) -> etree.ElementBase:
 def load_cxml(cxml: bytes or str, subst_vars: dict = {}) -> etree.ElementBase:
     parser = etree.XMLParser()
     xml: etree.ElementBase = None
-    if type(cxml) == bytes:
+    if type(cxml) is bytes:
         xml = etree.fromstring(cxml, parser)
     else:
         xml = etree.parse(cxml, parser)
@@ -154,7 +160,7 @@ def load_cxml(cxml: bytes or str, subst_vars: dict = {}) -> etree.ElementBase:
 
 
 def cxml_extract(cxml: str or etree.ElementBase, xpath: str) -> str:
-    xml = load_cxml(cxml.encode()) if type(cxml) == str else cxml
+    xml = load_cxml(cxml.encode()) if type(cxml) is str else cxml
     arr = xml.xpath(xpath)
     if not arr:
         return ''

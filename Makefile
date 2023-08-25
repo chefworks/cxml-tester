@@ -1,6 +1,6 @@
 AUTO_FIX_IMPORTS ?= 0
 
-CXML_TESTER_RELEASE = 1.0.2
+CXML_TESTER_RELEASE = 1.0.3
 
 PORT ?= 8080
 
@@ -10,10 +10,13 @@ endif
 
 test: static unit
 
-init:
+init: pipenv-init pipenv-sync
+
+pipenv-init:
 	pip3 install --upgrade pip
 	pip install pipenv
-	pipenv --python 3.8
+
+pipenv-sync:
 	pipenv sync --dev
 
 unit:
@@ -36,6 +39,9 @@ test-clean:
 
 export RUN_MODE = development
 
+run-flask:
+	pipenv run python -m flask run --host=0.0.0.0 --port=$(PORT)
+
 run:
 	pipenv run gunicorn --bind :$(PORT) --workers 1 --threads 8 --timeout 0 p6t:app
 
@@ -43,10 +49,10 @@ run-prod:
 	$(MAKE) run RUN_MODE=production
 
 DOCKER_IMG_TAG = cxml-tester
-DOCKER_IMG_VERSION = v1.0.1
+DOCKER_IMG_VERSION = v$(CXML_TESTER_RELEASE)
 
 docker:
-	pipenv run pip freeze > requirements.txt
+	pipenv requirements > requirements.txt
 	docker build -t $(DOCKER_IMG_TAG):$(DOCKER_IMG_VERSION) .
 ifeq ($(DOCKER_PUSH),1)
 	docker push $(DOCKER_IMG_TAG):$(DOCKER_IMG_VERSION)
