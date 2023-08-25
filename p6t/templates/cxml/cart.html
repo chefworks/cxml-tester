@@ -8,6 +8,8 @@
   <form method="post">
     <label for="cart_cxml"><span title="The order out cXML data">Cart</span></label>
     <textarea name="cart_cxml" id="cart_cxml">{{ cxml }}</textarea>
+    <label for="cxml_urlencoded"><span title="cXML - urlencoded">Cart - urlencoded</span></label>
+    <textarea name="cart_cxml" id="cxml_urlencoded">{{ cxml_urlencoded }}</textarea>
     <input type="submit" name="convert_cart2order" formaction="order" value="Convert to order request">
     <input type="submit" name="convert_cart2request" formaction="/" value="Convert to setup request">
   </form>

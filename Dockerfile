@@ -1,9 +1,20 @@
 # Use the official lightweight Python image.
 # https://hub.docker.com/_/python
-FROM python:3.8-slim
+FROM python:3.10-slim
 
-# Allow statements and log messages to immediately appear in the Knative logs
-ENV PYTHONUNBUFFERED True
+ENV DEBIAN_FRONTEND=noninteractive \
+        DEBCONF_NONINTERACTIVE_SEEN=true \
+        LC_ALL=C.UTF-8 \
+        LANG=C.UTF-8 \
+        PIPENV_VENV_IN_PROJECT=1 \
+        PYTHONUNBUFFERED=true
+
+RUN apt-get -yqq update && apt-get install -yq \
+        make \
+        && \
+        rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+
+RUN pip install pipenv
 
 # Copy local code to the container image.
 ENV APP_HOME /app
