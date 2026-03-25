@@ -118,6 +118,11 @@ class CxmlBase:
             sync_session=False,
             from_settings=False
         )
+        self.curl_request = TemplateVarSpec(
+            'curl_request',
+            sync_session=False,
+            from_settings=False
+        )
         self.auxiliary_id = TemplateVarSpec(
             'auxiliary_id',
             subst_xpath=cxml.XPATH_AUXILIARY_ID
@@ -160,6 +165,7 @@ class CxmlBase:
             self.xdebug,
             self.cxml_status_code,
             self.cxml_response,
+            self.curl_request,
             self.auxiliary_id,
             self.deployment_mode,
             self.cart_cxml
@@ -262,6 +268,10 @@ class CxmlBase:
                 'XDEBUG_SESSION=%s' % settings.XDEBUG_SESSION_NAME
             )
             pass
+
+        header_str = ' '.join([f'-H "{i}={headers[i]}"' for i in headers])
+
+        self.curl_request.val = f"curl -k {self.endpoint.val} {header_str} -d @- <<EOF\n{self.cxml.val.decode('UTF-8')}\nEOF\n"
 
         try:
             result = cxml.post(
