@@ -33,6 +33,13 @@
                     {% block cxml_form_submit %}
                         <input type="submit" tabindex="0" name="cxml_post" value="Send">
                     {% endblock %}
+                    {% block curl_request %}
+                        {% if curl_request.val %}
+                            <hr/>
+                            <label for="curl"><span title="Run request using curl">Curl</span></label>
+                            <pre>{{ curl_request.val }}</pre>
+                        {% endif %}
+                    {% endblock %}
                     {% block cxml_form_result %}
                         <hr/>
                         <label for="response"><span title="This is what the server responded">Response</span></label>

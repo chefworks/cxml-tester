@@ -271,7 +271,7 @@ class CxmlBase:
 
         header_str = ' '.join([f'-H "{i}={headers[i]}"' for i in headers])
 
-        self.curl_request.val = f"curl -k {self.endpoint.val} {header_str} -d @- <<EOF\n{self.cxml.val.decode('UTF-8')}\nEOF\n"
+        self.curl_request.val = f"curl -k '{self.endpoint.val}' {header_str} -d @- <<EOF\n{self.cxml.val.decode('UTF-8')}\nEOF\n"
 
         try:
             result = cxml.post(
